@@ -5,12 +5,13 @@ import androidx.compose.runtime.*
 import cafe.adriel.voyager.navigator.Navigator
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-import com.yolbertdev.coffeeplatform.ui.home.HomeScreen
+import com.yolbertdev.coffeeplatform.ui.login.LoginScreen
+import com.yolbertdev.coffeeplatform.ui.theme.CoffeePlatformTheme
 
 @Composable
 @Preview
 fun App() {
-    MaterialTheme {
-        Navigator(screen = HomeScreen())
+    CoffeePlatformTheme {
+        Navigator(screen = LoginScreen())
     }
 }

@@ -36,6 +36,9 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
 
+            // Resources
+            implementation(compose.components.resources)
+
             // coroutines
             implementation(libs.kotlinx.coroutines.core)
 
