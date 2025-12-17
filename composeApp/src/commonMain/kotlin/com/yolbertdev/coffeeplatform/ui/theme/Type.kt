@@ -35,7 +35,17 @@ fun AppTypography(): Typography {
             fontSize = 32.sp,
             color = Green500
         ),
+        bodySmall = TextStyle(
+            fontFamily = defaultFontFamily,
+            fontWeight = FontWeight.Normal,
+            fontSize = 14.sp
+        ),
         bodyMedium = TextStyle(
+            fontFamily = defaultFontFamily,
+            fontWeight = FontWeight.Normal,
+            fontSize = 14.sp
+        ),
+        bodyLarge = TextStyle(
             fontFamily = defaultFontFamily,
             fontWeight = FontWeight.Normal,
             fontSize = 16.sp

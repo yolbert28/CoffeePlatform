@@ -36,6 +36,9 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
 
+            // Adaptative
+            implementation(libs.adaptive)
+
             // Resources
             implementation(compose.components.resources)
 

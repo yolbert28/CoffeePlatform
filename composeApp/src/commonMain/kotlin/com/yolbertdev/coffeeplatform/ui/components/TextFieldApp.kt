@@ -46,7 +46,7 @@ fun TextFieldApp(
         prefix = prefix,
         suffix = suffix,
         singleLine = true,
-        modifier = modifier.padding(horizontal = 10.dp).widthIn(max = 400.dp).fillMaxWidth()
+        modifier = modifier.widthIn(max = 400.dp).fillMaxWidth()
             .border(3.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(10.dp)).
         clip(RoundedCornerShape(10.dp)),
         colors = OutlinedTextFieldDefaults.colors(
