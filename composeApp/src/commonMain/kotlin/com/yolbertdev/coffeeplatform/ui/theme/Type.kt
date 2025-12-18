@@ -49,6 +49,21 @@ fun AppTypography(): Typography {
             fontFamily = defaultFontFamily,
             fontWeight = FontWeight.Normal,
             fontSize = 16.sp
+        ),
+        titleSmall = TextStyle(
+            fontFamily = defaultFontFamily,
+            fontWeight = FontWeight.Bold,
+            fontSize = 20.sp,
+        ),
+        titleMedium = TextStyle(
+            fontFamily = defaultFontFamily,
+            fontWeight = FontWeight.Bold,
+            fontSize = 24.sp,
+        ),
+        titleLarge = TextStyle(
+            fontFamily = defaultFontFamily,
+            fontWeight = FontWeight.Bold,
+            fontSize = 28.sp,
         )
     )
 }

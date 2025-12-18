@@ -1,22 +1,22 @@
-package com.yolbertdev.coffeeplatform.ui.components.navigation
+package com.yolbertdev.coffeeplatform.ui.main.screens
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import coffeeplatform.composeapp.generated.resources.Res
-import coffeeplatform.composeapp.generated.resources.people
+import coffeeplatform.composeapp.generated.resources.dollar
 import org.jetbrains.compose.resources.painterResource
 
-object CustomerTab : Tab{
+object DebtTab : Tab{
     override val options: TabOptions
         @Composable
         get(){
-            val icon = painterResource(Res.drawable.people)
+            val icon = painterResource(Res.drawable.dollar)
             return remember {
                 TabOptions(
                     index = 0u,
-                    title = "Clientes",
+                    title = "Deudas",
                     icon = icon
                 )
             }

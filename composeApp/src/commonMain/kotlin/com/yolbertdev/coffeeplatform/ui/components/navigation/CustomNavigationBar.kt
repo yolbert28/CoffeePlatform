@@ -1,14 +1,12 @@
 package com.yolbertdev.coffeeplatform.ui.components.navigation
 
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
+import com.yolbertdev.coffeeplatform.ui.main.screens.CustomerTab
+import com.yolbertdev.coffeeplatform.ui.main.screens.DebtTab
+import com.yolbertdev.coffeeplatform.ui.main.screens.HomeTab
+import com.yolbertdev.coffeeplatform.ui.main.screens.ReportTab
 
 @Composable
 fun CustomNavigationBar() {

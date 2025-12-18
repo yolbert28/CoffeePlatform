@@ -1,23 +1,23 @@
-package com.yolbertdev.coffeeplatform.ui.components.navigation
+package com.yolbertdev.coffeeplatform.ui.main.screens
 
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import coffeeplatform.composeapp.generated.resources.Res
-import coffeeplatform.composeapp.generated.resources.download
 import coffeeplatform.composeapp.generated.resources.people
 import org.jetbrains.compose.resources.painterResource
 
-object ReportTab : Tab{
+object CustomerTab : Tab{
     override val options: TabOptions
         @Composable
         get(){
-            val icon = painterResource(Res.drawable.download)
+            val icon = painterResource(Res.drawable.people)
             return remember {
                 TabOptions(
                     index = 0u,
-                    title = "Reportes",
+                    title = "Clientes",
                     icon = icon
                 )
             }
@@ -25,7 +25,7 @@ object ReportTab : Tab{
 
     @Composable
     override fun Content() {
-        TODO("Not yet implemented")
+        Text("Customer")
     }
 
 }

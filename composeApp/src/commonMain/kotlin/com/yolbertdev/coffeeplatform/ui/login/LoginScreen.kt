@@ -33,7 +33,7 @@ import coffeeplatform.composeapp.generated.resources.decorator_bottom
 import coffeeplatform.composeapp.generated.resources.decorator_top
 import com.yolbertdev.coffeeplatform.ui.components.PrimaryButton
 import com.yolbertdev.coffeeplatform.ui.components.TextFieldApp
-import com.yolbertdev.coffeeplatform.ui.home.HomeScreen
+import com.yolbertdev.coffeeplatform.ui.main.MainScreen
 import org.jetbrains.compose.resources.painterResource
 
 class LoginScreen : Screen {
@@ -110,7 +110,7 @@ class LoginScreen : Screen {
                             style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.outlineVariant)
                         )
                     }
-                    PrimaryButton(text = "Iniciar Sesión", onClick = {navigation?.push(HomeScreen())})
+                    PrimaryButton(text = "Iniciar Sesión", onClick = {navigation?.push(MainScreen())})
                 }
                 Box(
                     Modifier.height(2.dp).fillMaxWidth()

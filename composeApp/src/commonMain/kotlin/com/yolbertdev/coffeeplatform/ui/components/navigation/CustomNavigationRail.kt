@@ -16,6 +16,10 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import coffeeplatform.composeapp.generated.resources.Res
 import coffeeplatform.composeapp.generated.resources.coffee_logo
+import com.yolbertdev.coffeeplatform.ui.main.screens.CustomerTab
+import com.yolbertdev.coffeeplatform.ui.main.screens.DebtTab
+import com.yolbertdev.coffeeplatform.ui.main.screens.HomeTab
+import com.yolbertdev.coffeeplatform.ui.main.screens.ReportTab
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
