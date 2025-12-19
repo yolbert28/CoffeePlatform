@@ -16,6 +16,7 @@ import com.yolbertdev.coffeeplatform.ui.components.navigation.CustomNavigationRa
 import com.yolbertdev.coffeeplatform.ui.main.screens.CustomerTab
 import com.yolbertdev.coffeeplatform.ui.main.screens.DebtTab
 import com.yolbertdev.coffeeplatform.ui.main.screens.HomeTab
+import com.yolbertdev.coffeeplatform.ui.main.screens.PaymentTab
 import com.yolbertdev.coffeeplatform.ui.main.screens.ReportTab
 
 class MainScreen : Screen {
@@ -30,7 +31,7 @@ class MainScreen : Screen {
             tabDisposable = {
                 TabDisposable(
                     it,
-                    listOf(HomeTab, CustomerTab, DebtTab, ReportTab)
+                    listOf(HomeTab, CustomerTab, PaymentTab, DebtTab, ReportTab)
                 )
             }
         ) {

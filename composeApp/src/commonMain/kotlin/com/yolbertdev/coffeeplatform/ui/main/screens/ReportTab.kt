@@ -1,5 +1,7 @@
 package com.yolbertdev.coffeeplatform.ui.main.screens
 
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import cafe.adriel.voyager.navigator.tab.Tab
@@ -15,7 +17,7 @@ object ReportTab : Tab{
             val icon = painterResource(Res.drawable.download)
             return remember {
                 TabOptions(
-                    index = 0u,
+                    index = 4u,
                     title = "Reportes",
                     icon = icon
                 )
@@ -24,7 +26,7 @@ object ReportTab : Tab{
 
     @Composable
     override fun Content() {
-        TODO("Not yet implemented")
+        Text("Clientes", style = MaterialTheme.typography.titleLarge)
     }
 
 }

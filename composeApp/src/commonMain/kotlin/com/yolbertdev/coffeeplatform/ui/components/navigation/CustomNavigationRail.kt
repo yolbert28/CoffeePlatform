@@ -19,6 +19,7 @@ import coffeeplatform.composeapp.generated.resources.coffee_logo
 import com.yolbertdev.coffeeplatform.ui.main.screens.CustomerTab
 import com.yolbertdev.coffeeplatform.ui.main.screens.DebtTab
 import com.yolbertdev.coffeeplatform.ui.main.screens.HomeTab
+import com.yolbertdev.coffeeplatform.ui.main.screens.PaymentTab
 import com.yolbertdev.coffeeplatform.ui.main.screens.ReportTab
 import org.jetbrains.compose.resources.painterResource
 
@@ -43,6 +44,7 @@ fun CustomNavigationRail() {
         val tabNavigator = LocalTabNavigator.current
         CustomNavigationRailItem(tabNavigator = tabNavigator, tabModel = HomeTab)
         CustomNavigationRailItem(tabNavigator = tabNavigator, tabModel = CustomerTab)
+        CustomNavigationRailItem(tabNavigator = tabNavigator, tabModel = PaymentTab)
         CustomNavigationRailItem(tabNavigator = tabNavigator, tabModel = DebtTab)
         CustomNavigationRailItem(tabNavigator = tabNavigator, tabModel = ReportTab)
     }
