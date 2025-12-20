@@ -29,12 +29,14 @@ import cafe.adriel.voyager.navigator.tab.TabOptions
 import coffeeplatform.composeapp.generated.resources.Res
 import coffeeplatform.composeapp.generated.resources.dollar
 import coffeeplatform.composeapp.generated.resources.search
+import com.yolbertdev.coffeeplatform.domain.Loan
 import com.yolbertdev.coffeeplatform.ui.components.CustomerListItem
 import com.yolbertdev.coffeeplatform.ui.components.FilterSelector
+import com.yolbertdev.coffeeplatform.ui.components.LoanItem
 import com.yolbertdev.coffeeplatform.ui.components.TextFieldApp
 import org.jetbrains.compose.resources.painterResource
 
-object DebtTab : Tab{
+object LoanTab : Tab{
     override val options: TabOptions
         @Composable
         get(){
@@ -42,7 +44,7 @@ object DebtTab : Tab{
             return remember {
                 TabOptions(
                     index = 3u,
-                    title = "Deudas",
+                    title = "Prestamos",
                     icon = icon
                 )
             }
@@ -50,11 +52,25 @@ object DebtTab : Tab{
 
     @Composable
     override fun Content() {
+        val loan = Loan(
+            id = 1,
+            customerId = 1,
+            interestRate = 0.125,
+            description = "Prestamo al Coño e madre de Luis para ver si se anima a estudiar y deja de darselo al profesor en el Cabiguan",
+            paymentDate = "12/03/2024",
+            paymentType = "Dolares",
+            quantity = 1000.0,
+            paid = 0.0,
+            statusId = 1,
+            creationDate = "12/12/2023",
+            updateDate = "12/10/2023"
+        )
+
         Column(
             Modifier.padding(horizontal = 20.dp)
         ) {
             Spacer(Modifier.height(24.dp))
-            Text("Deudas", style = MaterialTheme.typography.titleLarge)
+            Text("Prestamos", style = MaterialTheme.typography.titleLarge)
             Spacer(Modifier.height(16.dp))
             Row(
                 modifier = Modifier.clip(RoundedCornerShape(10.dp))
@@ -91,12 +107,11 @@ object DebtTab : Tab{
             Spacer(Modifier.height(8.dp))
             FilterSelector()
             LazyColumn(
-                modifier = Modifier.padding(vertical = 20.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier = Modifier.padding(vertical = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                items(20) {
-                    CustomerListItem()
+                items(10){
+                    LoanItem(loan)
                 }
             }
         }

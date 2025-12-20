@@ -14,7 +14,7 @@ import cafe.adriel.voyager.navigator.tab.TabNavigator
 import com.yolbertdev.coffeeplatform.ui.components.navigation.CustomNavigationBar
 import com.yolbertdev.coffeeplatform.ui.components.navigation.CustomNavigationRail
 import com.yolbertdev.coffeeplatform.ui.main.screens.CustomerTab
-import com.yolbertdev.coffeeplatform.ui.main.screens.DebtTab
+import com.yolbertdev.coffeeplatform.ui.main.screens.LoanTab
 import com.yolbertdev.coffeeplatform.ui.main.screens.HomeTab
 import com.yolbertdev.coffeeplatform.ui.main.screens.PaymentTab
 import com.yolbertdev.coffeeplatform.ui.main.screens.ReportTab
@@ -31,7 +31,7 @@ class MainScreen : Screen {
             tabDisposable = {
                 TabDisposable(
                     it,
-                    listOf(HomeTab, CustomerTab, PaymentTab, DebtTab, ReportTab)
+                    listOf(HomeTab, CustomerTab, PaymentTab, LoanTab, ReportTab)
                 )
             }
         ) {

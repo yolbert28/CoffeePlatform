@@ -110,7 +110,7 @@ object CustomerTab : Tab {
             Spacer(Modifier.height(8.dp))
             FilterSelector()
             LazyColumn(
-                modifier = Modifier.padding(vertical = 20.dp),
+                modifier = Modifier.padding(vertical = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {

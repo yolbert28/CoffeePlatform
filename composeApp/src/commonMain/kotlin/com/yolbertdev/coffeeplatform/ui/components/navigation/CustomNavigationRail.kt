@@ -17,7 +17,7 @@ import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import coffeeplatform.composeapp.generated.resources.Res
 import coffeeplatform.composeapp.generated.resources.coffee_logo
 import com.yolbertdev.coffeeplatform.ui.main.screens.CustomerTab
-import com.yolbertdev.coffeeplatform.ui.main.screens.DebtTab
+import com.yolbertdev.coffeeplatform.ui.main.screens.LoanTab
 import com.yolbertdev.coffeeplatform.ui.main.screens.HomeTab
 import com.yolbertdev.coffeeplatform.ui.main.screens.PaymentTab
 import com.yolbertdev.coffeeplatform.ui.main.screens.ReportTab
@@ -45,7 +45,7 @@ fun CustomNavigationRail() {
         CustomNavigationRailItem(tabNavigator = tabNavigator, tabModel = HomeTab)
         CustomNavigationRailItem(tabNavigator = tabNavigator, tabModel = CustomerTab)
         CustomNavigationRailItem(tabNavigator = tabNavigator, tabModel = PaymentTab)
-        CustomNavigationRailItem(tabNavigator = tabNavigator, tabModel = DebtTab)
+        CustomNavigationRailItem(tabNavigator = tabNavigator, tabModel = LoanTab)
         CustomNavigationRailItem(tabNavigator = tabNavigator, tabModel = ReportTab)
     }
 }
