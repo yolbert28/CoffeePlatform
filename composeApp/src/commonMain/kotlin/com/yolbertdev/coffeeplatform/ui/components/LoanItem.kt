@@ -22,8 +22,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.DefaultShadowColor
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.yolbertdev.coffeeplatform.domain.Loan
 import com.yolbertdev.coffeeplatform.ui.theme.Yellow500
@@ -57,15 +61,15 @@ fun LoanItem(loan: Loan) {
             maxLines = 3, overflow = TextOverflow.Ellipsis
         )
         Spacer(Modifier.height(8.dp))
-        ListItemFormatRow("Tasa:",loan.paymentType)
+        ListItemFormatRow("Tasa:", loan.paymentType)
         Spacer(Modifier.height(8.dp))
-        ListItemFormatRow("Cantidad:",loan.quantity.toString())
+        ListItemFormatRow("Cantidad:", loan.quantity.toString())
         Spacer(Modifier.height(8.dp))
-        ListItemFormatRow("Interes:",(loan.interestRate * 100).toString() + "%")
+        ListItemFormatRow("Interes:", (loan.interestRate * 100).toString() + "%")
         Spacer(Modifier.height(8.dp))
-        ListItemFormatRow("Fecha de pago:",loan.paymentDate)
+        ListItemFormatRow("Fecha de pago:", loan.paymentDate)
         Spacer(Modifier.height(8.dp))
-        ListItemFormatRow("Fecha de creación:",loan.creationDate)
+        ListItemFormatRow("Fecha de creación:", loan.creationDate)
     }
 }
 
@@ -88,15 +92,25 @@ fun StatusIndicator() {
 }
 
 @Composable
-fun ListItemFormatRow(title: String, value: String){
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
-        )
-        Text(text = value)
-    }
+fun ListItemFormatRow(
+    title: String,
+    value: String,
+    modifier: Modifier = Modifier,
+    style: TextStyle = MaterialTheme.typography.bodyLarge,
+    titleColor: Color = Color.Black,
+    valueColor: Color = Color.Black
+) {
+    Text(
+        text = buildAnnotatedString {
+            withStyle(SpanStyle(fontWeight = FontWeight.Bold, color = titleColor)) {
+                append("$title ")
+            }
+            withStyle(SpanStyle(fontWeight = FontWeight.Normal, color = valueColor)) {
+                append(value)
+            }
+        },
+        modifier = modifier,
+        style = style,
+        color = titleColor
+    )
 }

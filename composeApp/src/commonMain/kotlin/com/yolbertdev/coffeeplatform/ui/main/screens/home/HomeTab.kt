@@ -1,4 +1,4 @@
-package com.yolbertdev.coffeeplatform.ui.main.screens
+package com.yolbertdev.coffeeplatform.ui.main.screens.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,6 +17,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,6 +26,9 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.DefaultShadowColor
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.model.ScreenModel
+import cafe.adriel.voyager.core.model.rememberScreenModel
+import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import coffeeplatform.composeapp.generated.resources.Res
@@ -35,6 +39,7 @@ import coffeeplatform.composeapp.generated.resources.notification
 import org.jetbrains.compose.resources.painterResource
 
 object HomeTab : Tab {
+
     override val options: TabOptions
         @Composable
         get() {
@@ -50,17 +55,22 @@ object HomeTab : Tab {
 
     @Composable
     override fun Content() {
+
+        val screenModel = getScreenModel<HomeScreenModel>()
+
+        screenModel.startt()
+
         Column(
-            modifier = Modifier.padding(horizontal = 20.dp)
+            modifier = Modifier.Companion.padding(horizontal = 20.dp)
         ) {
-            Spacer(Modifier.height(28.dp))
+            Spacer(Modifier.Companion.height(28.dp))
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.Companion.CenterVertically
             ) {
                 Text("Hola, Yolbert!", style = MaterialTheme.typography.titleLarge)
-                Spacer(Modifier.weight(1f))
+                Spacer(Modifier.Companion.weight(1f))
                 IconButton(
-                    modifier = Modifier.shadow(
+                    modifier = Modifier.Companion.shadow(
                         5.dp, shape = RoundedCornerShape(10.dp),
                         ambientColor = DefaultShadowColor.copy(0.2f),
                         spotColor = DefaultShadowColor.copy(0.2f)
@@ -71,44 +81,45 @@ object HomeTab : Tab {
                         containerColor = MaterialTheme.colorScheme.surface,
                         contentColor = MaterialTheme.colorScheme.primary
                     ),
-                    shape = RoundedCornerShape(10.dp)
+                    shape = androidx.compose.foundation.shape.RoundedCornerShape(10.dp)
                 ) {
                     Icon(
                         painter = painterResource(Res.drawable.notification),
                         contentDescription = null,
-                        modifier = Modifier.padding(4.dp).size(28.dp)
+                        modifier = Modifier.Companion.padding(4.dp).size(28.dp)
                     )
                 }
             }
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.Companion.height(24.dp))
             Surface(
-                modifier = Modifier.shadow(
-                    5.dp, shape = RoundedCornerShape(10.dp),
+                modifier = Modifier.Companion.shadow(
+                    5.dp, shape = androidx.compose.foundation.shape.RoundedCornerShape(10.dp),
                     ambientColor = DefaultShadowColor.copy(0.2f),
                     spotColor = DefaultShadowColor.copy(0.2f)
-                ).clip(RoundedCornerShape(10.dp)),
+                ).clip(androidx.compose.foundation.shape.RoundedCornerShape(10.dp)),
             ) {
                 Column(
-                    modifier = Modifier.padding(16.dp)
+                    modifier = Modifier.Companion.padding(16.dp)
                 ) {
                     Text(
                         "Saldo total prestado:",
                         style = MaterialTheme.typography.titleMedium,
-                        color = Color.Black
+                        color = Color.Companion.Black
                     )
-                    Spacer(Modifier.height(12.dp))
+                    Spacer(Modifier.Companion.height(12.dp))
                     Row(
-                        modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp))
+                        modifier = Modifier.Companion.fillMaxWidth()
+                            .clip(androidx.compose.foundation.shape.RoundedCornerShape(10.dp))
                             .background(MaterialTheme.colorScheme.secondaryContainer)
                             .padding(16.dp),
-                        verticalAlignment = Alignment.CenterVertically,
+                        verticalAlignment = Alignment.Companion.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         Icon(
                             painter = painterResource(Res.drawable.coffee_logo),
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onSecondaryContainer,
-                            modifier = Modifier.size(32.dp)
+                            modifier = Modifier.Companion.size(32.dp)
                         )
                         Text(
                             "5000 Qt",
@@ -116,19 +127,20 @@ object HomeTab : Tab {
                             color = MaterialTheme.colorScheme.onSecondaryContainer
                         )
                     }
-                    Spacer(Modifier.height(12.dp))
+                    Spacer(Modifier.Companion.height(12.dp))
                     Row(
-                        modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp))
+                        modifier = Modifier.Companion.fillMaxWidth()
+                            .clip(androidx.compose.foundation.shape.RoundedCornerShape(10.dp))
                             .background(MaterialTheme.colorScheme.secondaryContainer)
                             .padding(16.dp),
-                        verticalAlignment = Alignment.CenterVertically,
+                        verticalAlignment = Alignment.Companion.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         Icon(
                             painter = painterResource(Res.drawable.dollar),
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onSecondaryContainer,
-                            modifier = Modifier.size(32.dp)
+                            modifier = Modifier.Companion.size(32.dp)
                         )
                         Text(
                             "1340$",
@@ -139,29 +151,30 @@ object HomeTab : Tab {
                 }
 
             }
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.Companion.height(16.dp))
             Text(
                 "Prestamos recientes:",
                 style = MaterialTheme.typography.titleSmall,
-                color = Color.Black
+                color = Color.Companion.Black
             )
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.Companion.height(12.dp))
             Column(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.Companion.CenterHorizontally
             ) {
                 Surface(
-                    modifier = Modifier.shadow(
-                        5.dp, shape = RoundedCornerShape(10.dp),
+                    modifier = Modifier.Companion.shadow(
+                        5.dp, shape = androidx.compose.foundation.shape.RoundedCornerShape(10.dp),
                         ambientColor = DefaultShadowColor.copy(0.2f),
                         spotColor = DefaultShadowColor.copy(0.2f)
-                    ).clip(RoundedCornerShape(10.dp)).fillMaxWidth()
+                    ).clip(androidx.compose.foundation.shape.RoundedCornerShape(10.dp))
+                        .fillMaxWidth()
 
                 ) {
                     Row(
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.Companion.fillMaxWidth()
                             .padding(16.dp),
-                        verticalAlignment = Alignment.CenterVertically,
+                        verticalAlignment = Alignment.Companion.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
@@ -178,17 +191,18 @@ object HomeTab : Tab {
 
                 }
                 Surface(
-                    modifier = Modifier.shadow(
-                        5.dp, shape = RoundedCornerShape(10.dp),
+                    modifier = Modifier.Companion.shadow(
+                        5.dp, shape = androidx.compose.foundation.shape.RoundedCornerShape(10.dp),
                         ambientColor = DefaultShadowColor.copy(0.2f),
                         spotColor = DefaultShadowColor.copy(0.2f)
-                    ).clip(RoundedCornerShape(10.dp)).fillMaxWidth()
+                    ).clip(androidx.compose.foundation.shape.RoundedCornerShape(10.dp))
+                        .fillMaxWidth()
 
                 ) {
                     Row(
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.Companion.fillMaxWidth()
                             .padding(16.dp),
-                        verticalAlignment = Alignment.CenterVertically,
+                        verticalAlignment = Alignment.Companion.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
@@ -205,17 +219,18 @@ object HomeTab : Tab {
 
                 }
                 Surface(
-                    modifier = Modifier.shadow(
-                        5.dp, shape = RoundedCornerShape(10.dp),
+                    modifier = Modifier.Companion.shadow(
+                        5.dp, shape = androidx.compose.foundation.shape.RoundedCornerShape(10.dp),
                         ambientColor = DefaultShadowColor.copy(0.2f),
                         spotColor = DefaultShadowColor.copy(0.2f)
-                    ).clip(RoundedCornerShape(10.dp)).fillMaxWidth()
+                    ).clip(androidx.compose.foundation.shape.RoundedCornerShape(10.dp))
+                        .fillMaxWidth()
 
                 ) {
                     Row(
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.Companion.fillMaxWidth()
                             .padding(16.dp),
-                        verticalAlignment = Alignment.CenterVertically,
+                        verticalAlignment = Alignment.Companion.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(

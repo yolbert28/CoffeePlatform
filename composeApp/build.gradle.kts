@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
+    alias(libs.plugins.sqldelight)
 }
 
 kotlin {
@@ -25,6 +26,11 @@ kotlin {
 
             // Koin
             implementation(libs.koin.android)
+            implementation(libs.koin.androidx.compose)
+
+            //Sqldelight
+            implementation(libs.android.driver)
+
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -75,6 +81,17 @@ kotlin {
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
+
+            //Sqldelight
+            implementation(libs.sqlite.driver)
+        }
+    }
+}
+
+sqldelight {
+    databases {
+        create("CoffeeDatabase") {
+            packageName.set("com.yolbertdev.coffeeplatform.db")
         }
     }
 }

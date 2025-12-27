@@ -15,7 +15,7 @@ import com.yolbertdev.coffeeplatform.ui.components.navigation.CustomNavigationBa
 import com.yolbertdev.coffeeplatform.ui.components.navigation.CustomNavigationRail
 import com.yolbertdev.coffeeplatform.ui.main.screens.CustomerTab
 import com.yolbertdev.coffeeplatform.ui.main.screens.LoanTab
-import com.yolbertdev.coffeeplatform.ui.main.screens.HomeTab
+import com.yolbertdev.coffeeplatform.ui.main.screens.home.HomeTab
 import com.yolbertdev.coffeeplatform.ui.main.screens.PaymentTab
 import com.yolbertdev.coffeeplatform.ui.main.screens.ReportTab
 

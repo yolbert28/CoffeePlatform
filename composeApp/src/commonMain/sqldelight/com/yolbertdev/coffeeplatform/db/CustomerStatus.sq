@@ -1,0 +1,9 @@
+CREATE TABLE customer_status(
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    name TEXT NOT NULL
+);
+
+INSERT INTO customer_status(id, name) VALUES (1,'BUENA PAGA');
+
+selectAll:
+SELECT * FROM customer_status;
