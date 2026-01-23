@@ -2,10 +2,16 @@ package com.yolbertdev.coffeeplatform.ui.main
 
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.window.core.layout.WindowSizeClass
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.tab.CurrentTab
@@ -18,6 +24,7 @@ import com.yolbertdev.coffeeplatform.ui.main.screens.LoanTab
 import com.yolbertdev.coffeeplatform.ui.main.screens.home.HomeTab
 import com.yolbertdev.coffeeplatform.ui.main.screens.PaymentTab
 import com.yolbertdev.coffeeplatform.ui.main.screens.ReportTab
+import okhttp3.internal.wait
 
 class MainScreen : Screen {
     @Composable
@@ -39,6 +46,18 @@ class MainScreen : Screen {
                 bottomBar = {
                     if (!medium) {
                         CustomNavigationBar()
+                    }
+                },
+                floatingActionButton = {
+                    FloatingActionButton(
+                        onClick = {},
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = Color.White
+                    ){
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = null
+                        )
                     }
                 }
             ) { innerPadding ->
