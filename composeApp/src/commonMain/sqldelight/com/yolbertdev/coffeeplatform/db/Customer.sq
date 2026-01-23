@@ -1,0 +1,22 @@
+CREATE TABLE customer (
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    id_card TEXT,
+    name TEXT NOT NULL,
+    nickname TEXT NOT NULL,
+    description TEXT NOT NULL,
+    credit_level INTEGER NOT NULL,
+    location TEXT NOT NULL,
+    photo TEXT NOT NULL,
+    creation_date INTEGER NOT NULL DEFAULT (strftime('%s', 'now')),
+    update_date INTEGER NOT NULL DEFAULT (strftime('%s', 'now')),
+    status_id INTEGER NOT NULL,
+    FOREIGN KEY (status_id) REFERENCES customer_status(id)
+);
+
+selectAll:
+SELECT * FROM customer;
+
+insert:
+INSERT INTO customer(id_card, name, nickname, description, credit_level, location, photo, status_id)
+VALUES (:id_card, :name, :nickname, :description, :credit_level, :location, :photo, :status_id);
+

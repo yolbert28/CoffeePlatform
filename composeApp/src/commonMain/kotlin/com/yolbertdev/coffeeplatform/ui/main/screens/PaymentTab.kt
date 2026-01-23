@@ -18,10 +18,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -36,16 +38,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import cafe.adriel.voyager.navigator.bottomSheet.BottomSheetNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import coffeeplatform.composeapp.generated.resources.Res
 import coffeeplatform.composeapp.generated.resources.payment
 import coffeeplatform.composeapp.generated.resources.search
-import com.yolbertdev.coffeeplatform.domain.Loan
+import com.yolbertdev.coffeeplatform.domain.model.Loan
 import com.yolbertdev.coffeeplatform.ui.components.CustomerListItem
 import com.yolbertdev.coffeeplatform.ui.components.FilterSelector
 import com.yolbertdev.coffeeplatform.ui.components.ListItemFormatRow
 import com.yolbertdev.coffeeplatform.ui.components.LoanItem
+import com.yolbertdev.coffeeplatform.ui.components.ModalAddCustomer
 import com.yolbertdev.coffeeplatform.ui.components.StatusIndicator
 import com.yolbertdev.coffeeplatform.ui.components.TextFieldApp
 import com.yolbertdev.coffeeplatform.ui.theme.Yellow500
@@ -68,6 +72,8 @@ object PaymentTab : Tab {
 
     @Composable
     override fun Content() {
+
+        ModalAddCustomer()
 
         Column(
             Modifier.padding(horizontal = 20.dp)

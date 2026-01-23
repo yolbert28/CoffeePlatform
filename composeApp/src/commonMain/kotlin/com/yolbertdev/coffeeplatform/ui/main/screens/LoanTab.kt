@@ -29,7 +29,7 @@ import cafe.adriel.voyager.navigator.tab.TabOptions
 import coffeeplatform.composeapp.generated.resources.Res
 import coffeeplatform.composeapp.generated.resources.dollar
 import coffeeplatform.composeapp.generated.resources.search
-import com.yolbertdev.coffeeplatform.domain.Loan
+import com.yolbertdev.coffeeplatform.domain.model.Loan
 import com.yolbertdev.coffeeplatform.ui.components.CustomerListItem
 import com.yolbertdev.coffeeplatform.ui.components.FilterSelector
 import com.yolbertdev.coffeeplatform.ui.components.LoanItem

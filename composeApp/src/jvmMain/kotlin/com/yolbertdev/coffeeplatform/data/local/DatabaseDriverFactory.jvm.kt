@@ -9,8 +9,8 @@ import java.util.Properties
 actual class DatabaseDriverFactory {
     actual fun createDriver(): SqlDriver {
         return JdbcSqliteDriver(
-            "jdbc:sqlite:CoffeeDatabase.db",
-            Properties(),
+            url = "jdbc:sqlite:CoffeeDatabase.db",
+            Properties().apply { put("foreign_keys", "true") },
             CoffeeDatabase.Companion.Schema
         )
     }

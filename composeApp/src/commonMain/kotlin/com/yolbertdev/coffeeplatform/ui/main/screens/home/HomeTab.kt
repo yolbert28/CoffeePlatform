@@ -58,8 +58,6 @@ object HomeTab : Tab {
 
         val screenModel = getScreenModel<HomeScreenModel>()
 
-        screenModel.startt()
-
         Column(
             modifier = Modifier.Companion.padding(horizontal = 20.dp)
         ) {

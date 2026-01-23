@@ -8,13 +8,5 @@ expect class DatabaseDriverFactory {
     fun createDriver(): SqlDriver
 }
 
-class LocalDatabase(
-    private val database: CoffeeDatabase
-){
-    fun createDatabase(){
-        val queries = database.customerStatusQueries
 
-        println(queries.selectAll().executeAsList())
-    }
-}
 

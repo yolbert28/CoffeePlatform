@@ -42,6 +42,12 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
 
+            implementation(compose.materialIconsExtended)
+
+            // Coil
+            implementation(libs.coil.compose)
+            implementation(libs.coil.network.okhttp)
+
             // Adaptative
             implementation(libs.adaptive)
 
@@ -70,6 +76,9 @@ kotlin {
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
+
+            // SqlDeLight Coroutine extension
+            implementation(libs.coroutines.extensions)
 
             // ViewModel
             implementation(libs.androidx.lifecycle.viewmodelCompose)

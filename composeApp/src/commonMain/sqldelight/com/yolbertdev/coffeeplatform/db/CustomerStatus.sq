@@ -3,7 +3,7 @@ CREATE TABLE customer_status(
     name TEXT NOT NULL
 );
 
-INSERT INTO customer_status(id, name) VALUES (1,'BUENA PAGA');
+INSERT INTO customer_status(id,name) VALUES (1,'name');
 
 selectAll:
 SELECT * FROM customer_status;

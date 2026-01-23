@@ -1,0 +1,10 @@
+CREATE TABLE payment (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    amount REAL NOT NULL,
+    payment_type_id INTEGER NOT NULL,
+    customer_id INTEGER NOT NULL,
+    creation_date INTEGER NOT NULL DEFAULT (strftime('%s', 'now')),
+    update_date INTEGER NOT NULL DEFAULT (strftime('%s', 'now')),
+    FOREIGN KEY (customer_id) REFERENCES customer(id),
+    FOREIGN KEY (payment_type_id) REFERENCES payment_type(id)
+);

@@ -1,4 +1,4 @@
-package com.yolbertdev.coffeeplatform.domain
+package com.yolbertdev.coffeeplatform.domain.model
 
 data class Loan(
     val id: Int,

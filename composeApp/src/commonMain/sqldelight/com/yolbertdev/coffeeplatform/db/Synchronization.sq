@@ -1,0 +1,5 @@
+CREATE TABLE synchronization (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    sync_phone_date INTEGER NOT NULL,
+    sync_pc_date INTEGER NOT NULL
+);

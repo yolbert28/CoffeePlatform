@@ -1,0 +1,31 @@
+insertLoanStatus:
+INSERT INTO loan_status (name)
+VALUES (?);
+
+insertCustomerStatus:
+INSERT INTO customer_status (name)
+VALUES (?);
+
+insertPaymentType:
+INSERT INTO payment_type (name)
+VALUES (?);
+
+insertLoan:
+INSERT INTO loan (customer_id, interest_rate, payment_type_id, amount, payment_date, paid, description, status_id)
+VALUES (?,?,?,?,?,?,?,?);
+
+insertPayment:
+INSERT INTO payment (amount, payment_type_id, customer_id)
+VALUES (?,?,?);
+
+-- insertCustomer:
+-- INSERT INTO customer (id_card,name, nickname, description,credit_level,location,photo)
+-- VALUES (?,?,?,?,?,?,?);
+
+insertContact:
+INSERT INTO contact (customer_id, phone_number)
+VALUES (?,?);
+
+insertSynchronization:
+INSERT INTO synchronization (sync_phone_date, sync_pc_date)
+VALUES (?,?);

@@ -13,7 +13,7 @@ import cafe.adriel.voyager.navigator.tab.TabDisposable
 import cafe.adriel.voyager.navigator.tab.TabNavigator
 import com.yolbertdev.coffeeplatform.ui.components.navigation.CustomNavigationBar
 import com.yolbertdev.coffeeplatform.ui.components.navigation.CustomNavigationRail
-import com.yolbertdev.coffeeplatform.ui.main.screens.CustomerTab
+import com.yolbertdev.coffeeplatform.ui.main.screens.customer.CustomerTab
 import com.yolbertdev.coffeeplatform.ui.main.screens.LoanTab
 import com.yolbertdev.coffeeplatform.ui.main.screens.home.HomeTab
 import com.yolbertdev.coffeeplatform.ui.main.screens.PaymentTab

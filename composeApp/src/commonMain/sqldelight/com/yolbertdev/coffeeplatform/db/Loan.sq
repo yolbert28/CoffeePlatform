@@ -1,0 +1,16 @@
+CREATE TABLE loan (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    customer_id INTEGER NOT NULL,
+    interest_rate INTEGER NOT NULL,
+    payment_type_id INTEGER NOT NULL,
+    amount REAL NOT NULL,
+    payment_date INTEGER NOT NULL,
+    paid REAL NOT NULL,
+    description TEXT NOT NULL,
+    creation_date INTEGER NOT NULL DEFAULT (strftime('%s', 'now')),
+    update_date INTEGER NOT NULL DEFAULT (strftime('%s', 'now')),
+    status_id INTEGER NOT NULL,
+    FOREIGN KEY (customer_id) REFERENCES customer(id),
+    FOREIGN KEY (payment_type_id) REFERENCES payment_type(id),
+    FOREIGN KEY (status_id) REFERENCES loan_status(id)
+);

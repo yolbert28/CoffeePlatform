@@ -3,7 +3,7 @@ package com.yolbertdev.coffeeplatform.ui.components.navigation
 import androidx.compose.material3.NavigationBar
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
-import com.yolbertdev.coffeeplatform.ui.main.screens.CustomerTab
+import com.yolbertdev.coffeeplatform.ui.main.screens.customer.CustomerTab
 import com.yolbertdev.coffeeplatform.ui.main.screens.LoanTab
 import com.yolbertdev.coffeeplatform.ui.main.screens.home.HomeTab
 import com.yolbertdev.coffeeplatform.ui.main.screens.PaymentTab
