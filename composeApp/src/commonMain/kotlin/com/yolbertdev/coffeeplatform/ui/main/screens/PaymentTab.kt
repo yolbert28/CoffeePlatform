@@ -49,9 +49,15 @@ import com.yolbertdev.coffeeplatform.ui.components.CustomerListItem
 import com.yolbertdev.coffeeplatform.ui.components.FilterSelector
 import com.yolbertdev.coffeeplatform.ui.components.ListItemFormatRow
 import com.yolbertdev.coffeeplatform.ui.components.LoanItem
+import com.yolbertdev.coffeeplatform.ui.components.MainPaymentItem
 import com.yolbertdev.coffeeplatform.ui.components.ModalAddCustomer
 import com.yolbertdev.coffeeplatform.ui.components.StatusIndicator
 import com.yolbertdev.coffeeplatform.ui.components.TextFieldApp
+import com.yolbertdev.coffeeplatform.ui.theme.Gray200
+import com.yolbertdev.coffeeplatform.ui.theme.Green300
+import com.yolbertdev.coffeeplatform.ui.theme.Green500
+import com.yolbertdev.coffeeplatform.ui.theme.Green500_88
+import com.yolbertdev.coffeeplatform.ui.theme.Yellow300
 import com.yolbertdev.coffeeplatform.ui.theme.Yellow500
 import com.yolbertdev.coffeeplatform.ui.theme.Yellow500_88
 import org.jetbrains.compose.resources.painterResource
@@ -72,8 +78,6 @@ object PaymentTab : Tab {
 
     @Composable
     override fun Content() {
-
-        ModalAddCustomer()
 
         Column(
             Modifier.padding(horizontal = 20.dp)
@@ -120,46 +124,14 @@ object PaymentTab : Tab {
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(5) {
-                    Column(
-                        modifier = Modifier.fillMaxWidth().shadow(
-                            5.dp, shape = RoundedCornerShape(10.dp),
-                            ambientColor = DefaultShadowColor.copy(0.2f),
-                            spotColor = DefaultShadowColor.copy(0.2f)
-                        ).clip(RoundedCornerShape(10.dp))
-                            .background(MaterialTheme.colorScheme.surface)
-                            .padding(horizontal = 16.dp, vertical = 20.dp),
-                    ) {
-                        ListItemFormatRow(
-                            "Cliente:",
-                            "Yolbert Cornelio Torrealba",
-                            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 18.sp)
-                        )
-                        Spacer(Modifier.height(8.dp))
-                        ListItemFormatRow("Apodo:", "Yolbertdev")
-                        Spacer(Modifier.height(8.dp))
-                        ListItemFormatRow("Fecha:", "24/10/2025")
-                        Spacer(Modifier.height(8.dp))
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.Top,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(
-                                "Cantidad:",
-                                style = MaterialTheme.typography.bodyLarge.copy(
-                                    fontWeight = FontWeight.Bold,
-                                    textAlign = TextAlign.Start
-                                )
-                            )
-                            Text(
-                                text = "32000$",
-                                style = MaterialTheme.typography.titleLarge.copy(textAlign = TextAlign.End),
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        }
-                    }
+                    MainPaymentItem(
+                        customerNickname = "Roberto",
+                        customerName = "Roberto Cuji",
+                        customerPhoto = "https://plus.unsplash.com/premium_photo-1689568126014-06fea9d5d341?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D",
+                        amount = "2 Qt",
+                        date = "Hoy, 10:30 AM"
+                    )
                 }
-
             }
         }
     }

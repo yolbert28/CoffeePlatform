@@ -1,12 +1,9 @@
 package com.yolbertdev.coffeeplatform.ui.components
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -28,6 +25,9 @@ fun SecondaryTextFieldApp(
     trailingIcon: @Composable (() -> Unit)? = null,
     prefix: @Composable (() -> Unit)? = null,
     suffix: @Composable (() -> Unit)? = null,
+    singleLine: Boolean = true,
+    minLines: Int = 1,
+    maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
 ) {
     TextField(
         value = value,
@@ -40,7 +40,9 @@ fun SecondaryTextFieldApp(
         trailingIcon = trailingIcon,
         prefix = prefix,
         suffix = suffix,
-        singleLine = true,
+        singleLine = singleLine,
+        minLines = minLines,
+        maxLines = maxLines,
         modifier = modifier.widthIn(max = 400.dp).fillMaxWidth().
             clip(RoundedCornerShape(10.dp)),
         colors = TextFieldDefaults.colors(

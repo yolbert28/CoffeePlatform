@@ -29,6 +29,8 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.DefaultShadowColor
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.koin.getScreenModel
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import coffeeplatform.composeapp.generated.resources.Res
@@ -37,7 +39,9 @@ import coffeeplatform.composeapp.generated.resources.search
 import com.yolbertdev.coffeeplatform.domain.model.Customer
 import com.yolbertdev.coffeeplatform.ui.components.CustomerListItem
 import com.yolbertdev.coffeeplatform.ui.components.FilterSelector
+import com.yolbertdev.coffeeplatform.ui.components.ModalAddCustomer
 import com.yolbertdev.coffeeplatform.ui.components.TextFieldApp
+import com.yolbertdev.coffeeplatform.ui.main.screens.customer.detail.CustomerDetailScreen
 import org.jetbrains.compose.resources.painterResource
 
 object CustomerTab : Tab {
@@ -57,7 +61,12 @@ object CustomerTab : Tab {
     @Composable
     override fun Content() {
 
+        val navigator = LocalNavigator.currentOrThrow
         val screenModel = getScreenModel<CustomerScreenModel>()
+        val uiState by screenModel.uiState.collectAsState()
+
+        if (uiState.showModalAddCustomer)
+            ModalAddCustomer(onDismiss = { screenModel.onChangeShowModalAddCustomer() })
 
         val customer = Customer(
             id = 1,
@@ -72,8 +81,6 @@ object CustomerTab : Tab {
             updateDate = 0,
             statusId = 1L
         )
-
-        val uiState by screenModel.uiState.collectAsState()
 
         LaunchedEffect(Unit) {
             screenModel.insertCustomer(customer)
@@ -126,7 +133,10 @@ object CustomerTab : Tab {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 items(uiState.customers) {
-                    CustomerListItem(customer = it)
+                    CustomerListItem(customer = it){
+                        screenModel.onChangeShowModalAddCustomer()
+//                        navigator.parent?.push(CustomerDetailScreen(it))
+                    }
                 }
             }
         }
