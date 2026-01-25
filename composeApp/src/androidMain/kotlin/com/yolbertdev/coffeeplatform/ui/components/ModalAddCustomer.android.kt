@@ -6,6 +6,7 @@ import androidx.activity.result.launch
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import coil3.Bitmap
 
 @Composable
@@ -20,7 +21,10 @@ actual fun rememberCameraLauncher(onResult: (Bitmap?) -> Unit): () -> Unit {
 @Composable
 actual fun ModalAddCustomer(onDismiss: () -> Unit) {
     ModalBottomSheet(
-        onDismissRequest = onDismiss
+        onDismissRequest = onDismiss,
+        containerColor = Color.White,
+        // Opcionalmente, puedes ajustar el color del "scrim" (el fondo oscurecido)
+        scrimColor = Color.Black.copy(alpha = 0.32f)
     ){
         CommonModalAddCustomer {  }
     }

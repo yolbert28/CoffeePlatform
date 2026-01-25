@@ -1,61 +1,42 @@
-package com.yolbertdev.coffeeplatform.ui.main.screens.customer
+package com.yolbertdev.coffeeplatform.ui.main.screens.payment
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.DefaultShadowColor
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import coffeeplatform.composeapp.generated.resources.Res
-import coffeeplatform.composeapp.generated.resources.people
-import coffeeplatform.composeapp.generated.resources.search
+import coffeeplatform.composeapp.generated.resources.payment
 import com.yolbertdev.coffeeplatform.domain.model.Customer
-import com.yolbertdev.coffeeplatform.ui.components.CustomerListItem
 import com.yolbertdev.coffeeplatform.ui.components.FilterSelector
-import com.yolbertdev.coffeeplatform.ui.components.ModalAddCustomer
+import com.yolbertdev.coffeeplatform.ui.components.MainPaymentItem
 import com.yolbertdev.coffeeplatform.ui.components.SearchBarApp
-import com.yolbertdev.coffeeplatform.ui.components.TextFieldApp
-import com.yolbertdev.coffeeplatform.ui.main.screens.customer.detail.CustomerDetailScreen
+import com.yolbertdev.coffeeplatform.ui.main.screens.payment.detail.PaymentDetailScreen
 import org.jetbrains.compose.resources.painterResource
 
-object CustomerTab : Tab {
+object PaymentTab : Tab {
     override val options: TabOptions
         @Composable
         get() {
-            val icon = painterResource(Res.drawable.people)
+            val icon = painterResource(Res.drawable.payment)
             return remember {
                 TabOptions(
-                    index = 1u,
-                    title = "Clientes",
+                    index = 2u,
+                    title = "Pagos",
                     icon = icon
                 )
             }
@@ -63,16 +44,6 @@ object CustomerTab : Tab {
 
     @Composable
     override fun Content() {
-
-        val navigator = LocalNavigator.currentOrThrow
-        val screenModel = getScreenModel<CustomerScreenModel>()
-        val uiState by screenModel.uiState.collectAsState()
-
-        var searchQuery by remember { mutableStateOf("") }
-
-
-        if (uiState.showModalAddCustomer)
-            ModalAddCustomer(onDismiss = { screenModel.onChangeShowModalAddCustomer() })
 
         val customer = Customer(
             id = 1,
@@ -88,10 +59,9 @@ object CustomerTab : Tab {
             statusId = 1L
         )
 
-        LaunchedEffect(Unit) {
-            screenModel.insertCustomer(customer)
-            screenModel.getAllCustomers()
-        }
+        val navigator = LocalNavigator.currentOrThrow
+
+        var searchQuery by remember { mutableStateOf("") }
 
         Column(
             Modifier.padding(horizontal = 20.dp)
@@ -109,14 +79,24 @@ object CustomerTab : Tab {
             FilterSelector()
             LazyColumn(
                 modifier = Modifier.padding(bottom = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                items(uiState.customers) {
-                    CustomerListItem(customer = it){
-                        screenModel.onChangeShowModalAddCustomer()
-//                        navigator.parent?.push(CustomerDetailScreen(it))
-                    }
+                items(5) {
+                    MainPaymentItem(
+                        customerNickname = "Roberto",
+                        customerName = "Roberto Cuji",
+                        customerPhoto = "https://plus.unsplash.com/premium_photo-1689568126014-06fea9d5d341?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D",
+                        amount = "2 Qt",
+                        date = "Hoy, 10:30 AM",
+                        onClick = {
+                            navigator.parent?.push(PaymentDetailScreen(
+                                amount = "2 Qt",
+                                paymentType = "Efectivo",
+                                date = "Hoy",
+                                customer = customer
+                            ))
+                        }
+                    )
                 }
             }
         }
