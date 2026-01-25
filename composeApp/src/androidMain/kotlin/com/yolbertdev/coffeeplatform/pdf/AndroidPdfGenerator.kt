@@ -6,6 +6,8 @@ import android.graphics.Paint
 import android.graphics.pdf.PdfDocument
 import com.yolbertdev.coffeeplatform.domain.model.ClientDebt
 import com.yolbertdev.coffeeplatform.domain.ports.PdfGenerator
+import com.yolbertdev.coffeeplatform.domain.ports.ReportRow
+import com.yolbertdev.coffeeplatform.domain.ports.ReportType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -16,77 +18,67 @@ class AndroidPdfGenerator(
     private val context: Context
 ) : PdfGenerator {
 
-    override suspend fun generateDebtReport(clients: List<ClientDebt>): String = withContext(Dispatchers.IO) {
+    override suspend fun generateReport(
+        type: ReportType,
+        data: List<ReportRow>,
+        filterDescription: String
+    ): String = withContext(Dispatchers.IO) {
         val document = PdfDocument()
-
-        // 1. Configuración de la página (A4 estándar aprox: 595 x 842 puntos)
-        val pageInfo = PdfDocument.PageInfo.Builder(595, 842, 1).create()
+        val pageInfo = PdfDocument.PageInfo.Builder(595, 842, 1).create() // A4
         val page = document.startPage(pageInfo)
         val canvas = page.canvas
 
-        // 2. Estilos
-        val titlePaint = Paint().apply {
-            color = Color.BLACK
-            textSize = 24f
-            isFakeBoldText = true
-        }
-        val textPaint = Paint().apply {
-            color = Color.DKGRAY
-            textSize = 14f
-        }
-        val linePaint = Paint().apply {
-            color = Color.GRAY
-            strokeWidth = 1f
-        }
+        // --- Estilos ---
+        val titlePaint = Paint().apply { color = Color.BLACK; textSize = 24f; isFakeBoldText = true }
+        val subtitlePaint = Paint().apply { color = Color.DKGRAY; textSize = 14f }
+        val headerPaint = Paint().apply { color = Color.BLACK; textSize = 12f; isFakeBoldText = true }
+        val textPaint = Paint().apply { color = Color.DKGRAY; textSize = 12f }
+        val linePaint = Paint().apply { color = Color.LTGRAY; strokeWidth = 1f }
 
-        // 3. Dibujar Encabezado
-        var yPosition = 60f
-        canvas.drawText("Reporte de Deudas - CoffeePlatform", 40f, yPosition, titlePaint)
+        var yPos = 60f
 
-        yPosition += 40f
-        canvas.drawLine(40f, yPosition, 550f, yPosition, linePaint)
+        // 1. Título y Subtítulo
+        canvas.drawText(type.title, 40f, yPos, titlePaint)
+        yPos += 25f
+        canvas.drawText(filterDescription, 40f, yPos, subtitlePaint)
+        yPos += 20f
+        canvas.drawLine(40f, yPos, 550f, yPos, linePaint)
+        yPos += 30f
 
-        // 4. Dibujar Lista de Clientes (Datos estáticos por ahora)
-        yPosition += 30f
+        // 2. Encabezados (Coordenadas ajustadas para 4 columnas)
+        // Col1: 40, Col2: 240, Col3: 360, Col4: 480
+        val headers = type.headers
+        canvas.drawText(headers[0], 40f, yPos, headerPaint)
+        canvas.drawText(headers[1], 240f, yPos, headerPaint)
+        canvas.drawText(headers[2], 360f, yPos, headerPaint)
+        canvas.drawText(headers[3], 480f, yPos, headerPaint)
 
-        // Cabecera de la tabla
-        canvas.drawText("Cliente", 40f, yPosition, textPaint)
-        canvas.drawText("Fecha", 300f, yPosition, textPaint)
-        canvas.drawText("Monto", 450f, yPosition, textPaint)
+        yPos += 10f
+        canvas.drawLine(40f, yPos, 550f, yPos, linePaint)
+        yPos += 20f
 
-        yPosition += 10f
-        canvas.drawLine(40f, yPosition, 550f, yPosition, linePaint)
-        yPosition += 30f
+        // 3. Datos
+        for (item in data) {
+            canvas.drawText(item.col1, 40f, yPos, textPaint)
+            canvas.drawText(item.col2, 240f, yPos, textPaint)
+            canvas.drawText(item.col3, 360f, yPos, textPaint)
+            canvas.drawText(item.col4, 480f, yPos, textPaint)
 
-        // Filas
-        for (client in clients) {
-            canvas.drawText(client.name, 40f, yPosition, textPaint)
-            canvas.drawText(client.date, 300f, yPosition, textPaint)
-            canvas.drawText("$${client.amount}", 450f, yPosition, textPaint)
+            yPos += 20f
 
-            yPosition += 25f
-
-            // Lógica simple de paginación (si se acaba la hoja)
-            if (yPosition > 800) {
-                // En un caso real, aquí cerrarías la página actual y abrirías una nueva
-                break
-            }
+            // Paginación simple
+            if (yPos > 800) break
         }
 
-        // 5. Finalizar página
         document.finishPage(page)
 
-        // 6. Guardar archivo
-        val directory = context.getExternalFilesDir(null) ?: context.filesDir
-        val file = File(directory, "Reporte_Deudas.pdf")
+        // Guardar archivo
+        val fileName = "Report_${type.name}_${System.currentTimeMillis()}.pdf"
+        val file = File(context.getExternalFilesDir(null) ?: context.filesDir, fileName)
 
         try {
-            FileOutputStream(file).use { outputStream ->
-                document.writeTo(outputStream)
-            }
+            FileOutputStream(file).use { document.writeTo(it) }
         } catch (e: IOException) {
-            e.printStackTrace()
-            // Manejo de error limpio
             document.close()
             throw e
         }
