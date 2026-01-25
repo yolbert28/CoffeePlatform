@@ -18,9 +18,9 @@ actual fun rememberCameraLauncher(onResult: (Bitmap?) -> Unit): () -> Unit {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-actual fun ModalAddCustomer() {
+actual fun ModalAddCustomer(onDismiss: () -> Unit) {
     ModalBottomSheet(
-        onDismissRequest = {}
+        onDismissRequest = onDismiss
     ){
         CommonModalAddCustomer {  }
     }

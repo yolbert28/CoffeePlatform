@@ -29,7 +29,12 @@ fun AppTypography(): Typography {
     val defaultFontFamily = roboto // Usa tu familia de fuentes
 
     return Typography(
-        headlineLarge = TextStyle(
+        headlineMedium = TextStyle(
+            fontFamily = defaultFontFamily,
+            fontWeight = FontWeight.Bold,
+            fontSize = 36.sp
+        ),
+        headlineSmall = TextStyle(
             fontFamily = defaultFontFamily,
             fontWeight = FontWeight.Bold,
             fontSize = 32.sp,

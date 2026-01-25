@@ -75,7 +75,7 @@ class LoginScreen : Screen {
                         painter = painterResource(Res.drawable.coffee_logo),
                         contentDescription = null
                     )
-                    Text("Coffee Platform", style = MaterialTheme.typography.headlineLarge)
+                    Text("Coffee Platform", style = MaterialTheme.typography.headlineSmall)
                 }
                 Text(
                     "Tu aplicación financiera de confianza ofreciendo los mejores creditos",

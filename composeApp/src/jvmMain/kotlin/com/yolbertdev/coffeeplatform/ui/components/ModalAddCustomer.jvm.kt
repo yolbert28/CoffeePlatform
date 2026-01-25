@@ -31,8 +31,8 @@ actual fun rememberCameraLauncher(onResult: (Bitmap?) -> Unit): () -> Unit {
 
 // La UI en jvmMain puede ser idéntica a la de Android o usar un Dialog en lugar de BottomSheet
 @Composable
-actual fun ModalAddCustomer() {
-    Dialog(onDismissRequest = {}) {
+actual fun ModalAddCustomer(onDismiss: () -> Unit) {
+    Dialog(onDismissRequest = onDismiss) {
         Surface(modifier = Modifier.fillMaxSize()) {
             CommonModalAddCustomer(onDismiss = {})
         }
