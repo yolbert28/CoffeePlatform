@@ -26,7 +26,6 @@ object ReportTab : Tab{
 
     @Composable
     override fun Content() {
-        Text("Clientes", style = MaterialTheme.typography.titleLarge)
     }
 
 }

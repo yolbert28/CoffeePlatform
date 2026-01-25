@@ -1,23 +1,11 @@
 package com.yolbertdev.coffeeplatform.ui.main.screens.home
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,9 +13,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.DefaultShadowColor
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
@@ -36,6 +23,9 @@ import coffeeplatform.composeapp.generated.resources.coffee_logo
 import coffeeplatform.composeapp.generated.resources.dollar
 import coffeeplatform.composeapp.generated.resources.home
 import coffeeplatform.composeapp.generated.resources.notification
+import com.yolbertdev.coffeeplatform.ui.components.MainPaymentItem
+import com.yolbertdev.coffeeplatform.ui.theme.Brown500
+import com.yolbertdev.coffeeplatform.ui.theme.Brown500_10
 import org.jetbrains.compose.resources.painterResource
 
 object HomeTab : Tab {
@@ -55,199 +45,150 @@ object HomeTab : Tab {
 
     @Composable
     override fun Content() {
-
         val screenModel = getScreenModel<HomeScreenModel>()
 
         Column(
-            modifier = Modifier.Companion.padding(horizontal = 20.dp)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 20.dp)
         ) {
-            Spacer(Modifier.Companion.height(28.dp))
+            Spacer(Modifier.height(32.dp))
+
+            // Header: Saludo y Notificaciones
             Row(
-                verticalAlignment = Alignment.Companion.CenterVertically
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("Hola, Yolbert!", style = MaterialTheme.typography.titleLarge)
-                Spacer(Modifier.Companion.weight(1f))
-                IconButton(
-                    modifier = Modifier.Companion.shadow(
-                        5.dp, shape = RoundedCornerShape(10.dp),
-                        ambientColor = DefaultShadowColor.copy(0.2f),
-                        spotColor = DefaultShadowColor.copy(0.2f)
-                    ),
-                    onClick = {},
-                    enabled = true,
-                    colors = IconButtonDefaults.iconButtonColors(
-                        containerColor = MaterialTheme.colorScheme.surface,
-                        contentColor = MaterialTheme.colorScheme.primary
-                    ),
-                    shape = androidx.compose.foundation.shape.RoundedCornerShape(10.dp)
-                ) {
-                    Icon(
-                        painter = painterResource(Res.drawable.notification),
-                        contentDescription = null,
-                        modifier = Modifier.Companion.padding(4.dp).size(28.dp)
+                Column {
+                    Text(
+                        "Hola, Yolbert!",
+                        style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
+                    )
+                    Text(
+                        "Bienvenido de vuelta",
+                        style = MaterialTheme.typography.bodyMedium.copy(color = Color.Gray)
                     )
                 }
+                Spacer(Modifier.weight(1f))
+                Surface(
+                    modifier = Modifier.shadow(
+                        2.dp, shape = RoundedCornerShape(12.dp),
+                        ambientColor = DefaultShadowColor.copy(0.1f)
+                    ),
+                    color = Color.White,
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    IconButton(
+                        onClick = {},
+                        modifier = Modifier.size(48.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(Res.drawable.notification),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                }
             }
-            Spacer(Modifier.Companion.height(24.dp))
+
+            Spacer(Modifier.height(24.dp))
+
+            // Tarjeta de Saldo Total
             Surface(
-                modifier = Modifier.Companion.shadow(
-                    5.dp, shape = androidx.compose.foundation.shape.RoundedCornerShape(10.dp),
-                    ambientColor = DefaultShadowColor.copy(0.2f),
-                    spotColor = DefaultShadowColor.copy(0.2f)
-                ).clip(androidx.compose.foundation.shape.RoundedCornerShape(10.dp)),
+                modifier = Modifier.shadow(
+                    3.dp, shape = RoundedCornerShape(16.dp),
+                    ambientColor = DefaultShadowColor.copy(0.1f)
+                ),
+                color = Color.White,
+                shape = RoundedCornerShape(16.dp)
             ) {
                 Column(
-                    modifier = Modifier.Companion.padding(16.dp)
+                    modifier = Modifier.padding(20.dp)
                 ) {
                     Text(
-                        "Saldo total prestado:",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = Color.Companion.Black
+                        "Saldo total prestado",
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                        color = Color.Black
                     )
-                    Spacer(Modifier.Companion.height(12.dp))
-                    Row(
-                        modifier = Modifier.Companion.fillMaxWidth()
-                            .clip(androidx.compose.foundation.shape.RoundedCornerShape(10.dp))
-                            .background(MaterialTheme.colorScheme.secondaryContainer)
-                            .padding(16.dp),
-                        verticalAlignment = Alignment.Companion.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        Icon(
-                            painter = painterResource(Res.drawable.coffee_logo),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onSecondaryContainer,
-                            modifier = Modifier.Companion.size(32.dp)
-                        )
-                        Text(
-                            "5000 Qt",
-                            style = MaterialTheme.typography.titleSmall,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer
-                        )
-                    }
-                    Spacer(Modifier.Companion.height(12.dp))
-                    Row(
-                        modifier = Modifier.Companion.fillMaxWidth()
-                            .clip(androidx.compose.foundation.shape.RoundedCornerShape(10.dp))
-                            .background(MaterialTheme.colorScheme.secondaryContainer)
-                            .padding(16.dp),
-                        verticalAlignment = Alignment.Companion.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        Icon(
-                            painter = painterResource(Res.drawable.dollar),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onSecondaryContainer,
-                            modifier = Modifier.Companion.size(32.dp)
-                        )
-                        Text(
-                            "1340$",
-                            style = MaterialTheme.typography.titleSmall,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer
-                        )
-                    }
-                }
+                    Spacer(Modifier.height(16.dp))
 
+                    // Fila para Quintales (Qt) - Color Café/Marrón
+                    BalanceRow(
+                        icon = Res.drawable.coffee_logo,
+                        amount = "5,000 Qt",
+                        containerColor = Brown500_10, // Marrón café muy suave
+                        contentColor = Brown500 // Marrón oscuro para el texto e icono
+                    )
+
+                    Spacer(Modifier.height(12.dp))
+
+                    // Fila para Dólares ($) - Color Verde Éxito
+                    BalanceRow(
+                        icon = Res.drawable.dollar,
+                        amount = "1,340.00 $",
+                        containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f), // Verde de tu app suave
+                        contentColor = MaterialTheme.colorScheme.primary // Verde de tu app sólido
+                    )
+                }
             }
-            Spacer(Modifier.Companion.height(16.dp))
+
+            Spacer(Modifier.height(24.dp))
+
             Text(
-                "Prestamos recientes:",
-                style = MaterialTheme.typography.titleSmall,
-                color = Color.Companion.Black
+                "Préstamos recientes",
+                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                color = Color.Black
             )
-            Spacer(Modifier.Companion.height(12.dp))
-            Column(
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                horizontalAlignment = Alignment.Companion.CenterHorizontally
+
+            Spacer(Modifier.height(12.dp))
+
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Surface(
-                    modifier = Modifier.Companion.shadow(
-                        5.dp, shape = androidx.compose.foundation.shape.RoundedCornerShape(10.dp),
-                        ambientColor = DefaultShadowColor.copy(0.2f),
-                        spotColor = DefaultShadowColor.copy(0.2f)
-                    ).clip(androidx.compose.foundation.shape.RoundedCornerShape(10.dp))
-                        .fillMaxWidth()
-
-                ) {
-                    Row(
-                        modifier = Modifier.Companion.fillMaxWidth()
-                            .padding(16.dp),
-                        verticalAlignment = Alignment.Companion.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            "Roberto Cuji",
-                            style = MaterialTheme.typography.titleSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        Text(
-                            "2 Qt",
-                            style = MaterialTheme.typography.titleSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-
+                items(5) {
+                    MainPaymentItem(
+                        customerNickname = "Roberto",
+                        customerName = "Roberto Cuji",
+                        customerPhoto = "", // Aquí iría la URL o Path
+                        amount = "2 Qt",
+                        date = "Hoy, 10:30 AM",
+                        onClick = {}
+                    )
                 }
-                Surface(
-                    modifier = Modifier.Companion.shadow(
-                        5.dp, shape = androidx.compose.foundation.shape.RoundedCornerShape(10.dp),
-                        ambientColor = DefaultShadowColor.copy(0.2f),
-                        spotColor = DefaultShadowColor.copy(0.2f)
-                    ).clip(androidx.compose.foundation.shape.RoundedCornerShape(10.dp))
-                        .fillMaxWidth()
-
-                ) {
-                    Row(
-                        modifier = Modifier.Companion.fillMaxWidth()
-                            .padding(16.dp),
-                        verticalAlignment = Alignment.Companion.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            "Maria Julia",
-                            style = MaterialTheme.typography.titleSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        Text(
-                            "1/2 Qt",
-                            style = MaterialTheme.typography.titleSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-
-                }
-                Surface(
-                    modifier = Modifier.Companion.shadow(
-                        5.dp, shape = androidx.compose.foundation.shape.RoundedCornerShape(10.dp),
-                        ambientColor = DefaultShadowColor.copy(0.2f),
-                        spotColor = DefaultShadowColor.copy(0.2f)
-                    ).clip(androidx.compose.foundation.shape.RoundedCornerShape(10.dp))
-                        .fillMaxWidth()
-
-                ) {
-                    Row(
-                        modifier = Modifier.Companion.fillMaxWidth()
-                            .padding(16.dp),
-                        verticalAlignment = Alignment.Companion.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            "José Rafael",
-                            style = MaterialTheme.typography.titleSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        Text(
-                            "200 $",
-                            style = MaterialTheme.typography.titleSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-
+                item {
+                    Spacer(Modifier.height(30.dp))
                 }
             }
-
         }
-
     }
 
+    @Composable
+    private fun BalanceRow(
+        icon: org.jetbrains.compose.resources.DrawableResource,
+        amount: String,
+        containerColor: Color,
+        contentColor: Color
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(12.dp))
+                .background(containerColor)
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Icon(
+                painter = painterResource(icon),
+                contentDescription = null,
+                tint = contentColor,
+                modifier = Modifier.size(28.dp)
+            )
+            Text(
+                amount,
+                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.ExtraBold),
+                color = contentColor
+            )
+        }
+    }
 }
