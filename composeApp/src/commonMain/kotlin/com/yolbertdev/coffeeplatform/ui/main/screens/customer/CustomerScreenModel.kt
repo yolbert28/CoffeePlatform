@@ -35,8 +35,18 @@ class CustomerScreenModel(
             }
         }
     }
+
+    fun onChangeShowModalAddCustomer() {
+        _uiState.update {
+            it.copy(
+                showModalAddCustomer = !it.showModalAddCustomer
+            )
+        }
+    }
+
 }
 
 data class CustomerUiState(
     val customers: List<Customer> = emptyList(),
+    val showModalAddCustomer: Boolean = false
 )

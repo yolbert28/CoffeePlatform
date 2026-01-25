@@ -17,9 +17,9 @@ import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import coffeeplatform.composeapp.generated.resources.Res
 import coffeeplatform.composeapp.generated.resources.coffee_logo
 import com.yolbertdev.coffeeplatform.ui.main.screens.customer.CustomerTab
-import com.yolbertdev.coffeeplatform.ui.main.screens.LoanTab
+import com.yolbertdev.coffeeplatform.ui.main.screens.loan.LoanTab
 import com.yolbertdev.coffeeplatform.ui.main.screens.home.HomeTab
-import com.yolbertdev.coffeeplatform.ui.main.screens.PaymentTab
+import com.yolbertdev.coffeeplatform.ui.main.screens.payment.PaymentTab
 import com.yolbertdev.coffeeplatform.ui.main.screens.ReportTab
 import org.jetbrains.compose.resources.painterResource
 

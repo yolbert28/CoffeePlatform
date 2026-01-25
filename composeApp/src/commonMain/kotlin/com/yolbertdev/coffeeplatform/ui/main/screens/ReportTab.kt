@@ -26,7 +26,7 @@ object ReportTab : Tab {
 
     override val options: TabOptions
         @Composable
-        get() {
+        get(){
             val icon = painterResource(Res.drawable.download)
             return remember {
                 TabOptions(
