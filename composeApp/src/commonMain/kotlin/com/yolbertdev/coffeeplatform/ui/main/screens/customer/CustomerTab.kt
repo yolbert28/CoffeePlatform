@@ -1,22 +1,12 @@
 package com.yolbertdev.coffeeplatform.ui.main.screens.customer
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -26,9 +16,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.DefaultShadowColor
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -37,14 +24,11 @@ import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import coffeeplatform.composeapp.generated.resources.Res
 import coffeeplatform.composeapp.generated.resources.people
-import coffeeplatform.composeapp.generated.resources.search
 import com.yolbertdev.coffeeplatform.domain.model.Customer
 import com.yolbertdev.coffeeplatform.ui.components.CustomerListItem
 import com.yolbertdev.coffeeplatform.ui.components.FilterSelector
-import com.yolbertdev.coffeeplatform.ui.components.ModalAddCustomer
+import com.yolbertdev.coffeeplatform.ui.main.screens.customer.add.AddCustomerScreen
 import com.yolbertdev.coffeeplatform.ui.components.SearchBarApp
-import com.yolbertdev.coffeeplatform.ui.components.TextFieldApp
-import com.yolbertdev.coffeeplatform.ui.main.screens.customer.detail.CustomerDetailScreen
 import org.jetbrains.compose.resources.painterResource
 
 object CustomerTab : Tab {
@@ -70,9 +54,6 @@ object CustomerTab : Tab {
 
         var searchQuery by remember { mutableStateOf("") }
 
-
-        if (uiState.showModalAddCustomer)
-            ModalAddCustomer(onDismiss = { screenModel.onChangeShowModalAddCustomer() })
 
         val customer = Customer(
             id = 1,
@@ -114,8 +95,7 @@ object CustomerTab : Tab {
             ) {
                 items(uiState.customers) {
                     CustomerListItem(customer = it){
-                        screenModel.onChangeShowModalAddCustomer()
-//                        navigator.parent?.push(CustomerDetailScreen(it))
+                        navigator.parent?.push(AddCustomerScreen())
                     }
                 }
             }

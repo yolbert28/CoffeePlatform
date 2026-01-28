@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ReceiptLong
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
+import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Payments
 import androidx.compose.material.icons.rounded.Search
@@ -110,6 +111,21 @@ data class CustomerDetailScreen(val customer: Customer) : Screen {
                         text = customer.name,
                         style = MaterialTheme.typography.bodyMedium.copy(color = Gray200)
                     )
+                    Spacer(Modifier.height(16.dp))
+
+                    // BOTÓN DE EDICIÓN ESTILO INSTAGRAM
+                    OutlinedButton(
+                        onClick = { /* TODO: Abrir Modal de Edición */ },
+                        shape = RoundedCornerShape(10.dp),
+                        modifier = Modifier.fillMaxWidth(0.6f),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = MaterialTheme.colorScheme.primary
+                        )
+                    ) {
+                        Icon(Icons.Rounded.Edit, null, modifier = Modifier.size(16.dp))
+                        Spacer(Modifier.width(8.dp))
+                        Text("Editar Perfil", style = MaterialTheme.typography.labelLarge)
+                    }
                 }
 
                 // Selector de Secciones (Tipo Instagram)
