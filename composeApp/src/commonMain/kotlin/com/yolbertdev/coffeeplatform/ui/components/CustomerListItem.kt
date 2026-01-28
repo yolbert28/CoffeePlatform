@@ -73,7 +73,7 @@ fun CustomerListItem(customer: Customer, onClick: () -> Unit) {
                 // Badge de Nivel de Crédito
                 Surface(
                     shape = RoundedCornerShape(8.dp),
-                    color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f)
+                    color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.2f)
                 ) {
                     Text(
                         text = "Nivel ${customer.creditLevel}",

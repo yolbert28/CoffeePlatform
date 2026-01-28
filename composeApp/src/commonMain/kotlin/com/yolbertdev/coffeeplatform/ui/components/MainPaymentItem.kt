@@ -1,6 +1,7 @@
 package com.yolbertdev.coffeeplatform.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,12 +28,16 @@ fun MainPaymentItem(
     customerPhoto: String,
     amount: String,
     date: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
 ) {
     Surface(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp),
+            .padding(vertical = 4.dp)
+            .clickable{
+                onClick()
+            },
         shape = RoundedCornerShape(16.dp),
         color = Color.White, // Fondo blanco puro
         tonalElevation = 0.dp, // Sin elevación tonal

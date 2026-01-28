@@ -32,6 +32,7 @@ import com.yolbertdev.coffeeplatform.domain.model.Loan
 import com.yolbertdev.coffeeplatform.ui.components.ListItemFormatRow
 import com.yolbertdev.coffeeplatform.ui.components.LoanItem
 import com.yolbertdev.coffeeplatform.ui.components.PaymentItem
+import com.yolbertdev.coffeeplatform.ui.components.SearchBarApp
 import com.yolbertdev.coffeeplatform.ui.components.TextFieldApp
 import com.yolbertdev.coffeeplatform.ui.theme.Gray200
 
@@ -152,31 +153,20 @@ data class CustomerDetailScreen(val customer: Customer) : Screen {
 
                         CustomerDetailSection.LOANS -> {
                             item {
-                                Box(
-                                    modifier = Modifier.padding(bottom = 12.dp)
-                                        .clip(RoundedCornerShape(12.dp))
-                                        .background(MaterialTheme.colorScheme.surface)
-                                        .padding(12.dp)
-                                ) {
-                                    TextFieldApp(
-                                        value = searchQuery,
-                                        onValueChange = { searchQuery = it },
-                                        modifier = Modifier
-                                            .fillMaxWidth(),
-                                        placeholder = { Text("Buscar préstamo...") },
-                                        trailingIcon = {
-                                            Icon(
-                                                imageVector = Icons.Rounded.Search,
-                                                contentDescription = null
-                                            )
-                                        }
-                                    )
-                                }
+                                var searchQuery by remember { mutableStateOf("") }
 
+                                // Barra de búsqueda reutilizable
+                                SearchBarApp(
+                                    value = searchQuery,
+                                    onValueChange = { searchQuery = it },
+                                    placeholder = "Buscar por cliente o descripción..."
+                                )
+
+                                Spacer(Modifier.height(4.dp))
                             }
                             // Aquí irían los préstamos reales del cliente
                             items(5) {
-                                LoanItem(mockLoan)
+                                LoanItem(mockLoan, onClick = {})
                                 Spacer(Modifier.height(8.dp))
                             }
                         }
