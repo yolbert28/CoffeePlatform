@@ -74,7 +74,7 @@ class AddCustomerScreenModel(
                 try {
                     // 1. Si hay un bitmap capturado, lo guardamos físicamente primero
                     val photoPath = currentState.capturedBitmap?.let { bitmap ->
-                        val fileName = "customer_${DateMethods}"
+                        val fileName = "customer_${DateMethods.getCurrentTimeMillis()}"
                         ImageStorage.saveImage(bitmap, fileName)
                     } ?: "nothing"
 
@@ -91,8 +91,8 @@ class AddCustomerScreenModel(
                         creditLevel = 1L,
                         location = currentState.location,
                         photo = photoPath, // Guardamos el path
-                        creationDate = 0L,
-                        updateDate = 0L,
+                        creationDate = DateMethods.getCurrentTimeMillis(),
+                        updateDate = DateMethods.getCurrentTimeMillis(),
                         statusId = 1L
                     )
 
