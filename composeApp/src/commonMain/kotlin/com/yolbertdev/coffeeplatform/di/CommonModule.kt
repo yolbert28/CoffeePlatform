@@ -13,10 +13,18 @@ import com.yolbertdev.coffeeplatform.ui.main.screens.home.HomeScreenModel
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
+import com.yolbertdev.coffeeplatform.data.database.dao.LoanDao
+import com.yolbertdev.coffeeplatform.data.database.dao.PaymentDao
+import com.yolbertdev.coffeeplatform.data.database.repository.LoanRepositoryImpl
+import com.yolbertdev.coffeeplatform.data.database.repository.PaymentRepositoryImpl
+import com.yolbertdev.coffeeplatform.domain.repository.LoanRepository
+import com.yolbertdev.coffeeplatform.domain.repository.PaymentRepository
 
 val commonModule = module {
     single<CoffeeDatabase> { CoffeeDatabase(get()) }
     single<CustomerDao> { CustomerDao(get()) }
+    single<LoanDao> { LoanDao(get()) }
+    single<PaymentDao> { PaymentDao(get()) }
     single<HomeScreenModel> { HomeScreenModel() }
     single<CustomerScreenModel>{CustomerScreenModel(get(), get())}
 
@@ -25,4 +33,7 @@ val commonModule = module {
     single<InsertCustomerUseCase>{InsertCustomerUseCase(get())}
     single<SelectAllCustomerUseCase>{SelectAllCustomerUseCase(get())}
     singleOf(::CustomerRepositoryImpl) bind CustomerRepository::class
-    factory { ReportViewModel(get()) }}
+    singleOf(::LoanRepositoryImpl) bind LoanRepository::class
+    singleOf(::PaymentRepositoryImpl) bind PaymentRepository::class
+
+    factory { ReportViewModel(get(),get(),get()) }}

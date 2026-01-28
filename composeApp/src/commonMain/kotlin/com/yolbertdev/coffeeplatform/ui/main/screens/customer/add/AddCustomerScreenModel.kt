@@ -6,7 +6,7 @@ import coil3.Bitmap
 import com.yolbertdev.coffeeplatform.domain.model.Customer
 import com.yolbertdev.coffeeplatform.domain.usecase.InsertCustomerUseCase
 import com.yolbertdev.coffeeplatform.util.ImageStorage
-import com.yolbertdev.coffeeplatform.util.getCurrentTimeMillis
+import com.yolbertdev.coffeeplatform.util.DateMethods
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -74,7 +74,7 @@ class AddCustomerScreenModel(
                 try {
                     // 1. Si hay un bitmap capturado, lo guardamos físicamente primero
                     val photoPath = currentState.capturedBitmap?.let { bitmap ->
-                        val fileName = "customer_${getCurrentTimeMillis()}"
+                        val fileName = "customer_${DateMethods}"
                         ImageStorage.saveImage(bitmap, fileName)
                     } ?: "nothing"
 
