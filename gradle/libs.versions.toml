@@ -16,11 +16,11 @@ coilNetworkOkhttp = "3.3.0"
 composeHotReload = "1.0.0"
 composeMultiplatform = "1.9.3"
 junit = "4.13.2"
-koinAndroidxNavigation = "4.1.1"
 koin-bom = "4.1.1"
 kotlin = "2.2.21"
 kotlinx-coroutines = "1.10.2"
 kotlinxCoroutinesCore = "1.10.2"
+kotlinxDatetime = "0.7.1"
 voyagerNavigator = "1.1.0-beta03"
 sqldelight = "2.2.1"
 
@@ -49,6 +49,7 @@ androidx-lifecycle-viewmodelCompose = { module = "org.jetbrains.androidx.lifecyc
 androidx-lifecycle-runtimeCompose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
 kotlinx-coroutinesSwing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
 native-driver = { module = "app.cash.sqldelight:native-driver", version.ref = "androidDriver" }
 sqlite-driver = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "androidDriver" }
 voyager-bottom-sheet-navigator = { module = "cafe.adriel.voyager:voyager-bottom-sheet-navigator", version.ref = "voyagerNavigator" }

@@ -8,6 +8,7 @@ import com.yolbertdev.coffeeplatform.domain.usecase.InsertCustomerUseCase
 import com.yolbertdev.coffeeplatform.domain.usecase.SelectAllCustomerUseCase
 import com.yolbertdev.coffeeplatform.presentation.ReportViewModel
 import com.yolbertdev.coffeeplatform.ui.main.screens.customer.CustomerScreenModel
+import com.yolbertdev.coffeeplatform.ui.main.screens.customer.add.AddCustomerScreenModel
 import com.yolbertdev.coffeeplatform.ui.main.screens.home.HomeScreenModel
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
@@ -18,6 +19,9 @@ val commonModule = module {
     single<CustomerDao> { CustomerDao(get()) }
     single<HomeScreenModel> { HomeScreenModel() }
     single<CustomerScreenModel>{CustomerScreenModel(get(), get())}
+
+    factory<AddCustomerScreenModel>{ AddCustomerScreenModel(get())}
+
     single<InsertCustomerUseCase>{InsertCustomerUseCase(get())}
     single<SelectAllCustomerUseCase>{SelectAllCustomerUseCase(get())}
     singleOf(::CustomerRepositoryImpl) bind CustomerRepository::class
