@@ -35,7 +35,7 @@ val commonModule = module {
     single<CustomerDao> { CustomerDao(get()) }
     single<LoanDao> { LoanDao(get()) }
     single<PaymentDao> { PaymentDao(get()) }
-    single<HomeScreenModel> { HomeScreenModel() }
+    single<HomeScreenModel> { HomeScreenModel(get()) }
     single<CustomerScreenModel>{CustomerScreenModel(get(), get())}
     single { InsertLoanUseCase(get()) }
     single<UserRepository> { UserRepositoryImpl(get()) }
@@ -50,6 +50,7 @@ val commonModule = module {
     single { RegisterUseCase(get()) }
     factory { CustomerDetailScreenModel(get()) }
     factory { LoanScreenModel(get()) }
+    factory { HomeScreenModel(get()) }
     factory { RegisterScreenModel(get()) }
     factory { LoginScreenModel(get()) }
     factory { ReportViewModel(get(),get(),get()) }}

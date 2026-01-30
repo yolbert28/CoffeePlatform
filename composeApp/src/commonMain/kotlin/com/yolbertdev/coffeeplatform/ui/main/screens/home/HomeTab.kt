@@ -3,9 +3,13 @@ package com.yolbertdev.coffeeplatform.ui.main.screens.home
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,9 +28,12 @@ import coffeeplatform.composeapp.generated.resources.dollar
 import coffeeplatform.composeapp.generated.resources.home
 import coffeeplatform.composeapp.generated.resources.notification
 import com.yolbertdev.coffeeplatform.ui.components.MainPaymentItem
-import com.yolbertdev.coffeeplatform.ui.theme.Brown500
-import com.yolbertdev.coffeeplatform.ui.theme.Brown500_10
+import com.yolbertdev.coffeeplatform.util.DateMethods
 import org.jetbrains.compose.resources.painterResource
+
+// Definimos los colores aquí para asegurar que el diseño funcione sin tocar Color.kt
+val Brown500 = Color(0xFF795548)
+val Brown500_10 = Color(0x1A795548) // Alpha 10%
 
 object HomeTab : Tab {
 
@@ -45,7 +52,12 @@ object HomeTab : Tab {
 
     @Composable
     override fun Content() {
-        val screenModel = getScreenModel<HomeScreenModel>()
+        val viewModel = getScreenModel<HomeScreenModel>()
+        val state by viewModel.state.collectAsState()
+
+        LaunchedEffect(Unit) {
+            viewModel.loadData()
+        }
 
         Column(
             modifier = Modifier
@@ -60,7 +72,7 @@ object HomeTab : Tab {
             ) {
                 Column {
                     Text(
-                        "Hola, Yolbert!",
+                        "Hola, ${state.userName}!", // NOMBRE REAL
                         style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
                     )
                     Text(
@@ -112,22 +124,22 @@ object HomeTab : Tab {
                     )
                     Spacer(Modifier.height(16.dp))
 
-                    // Fila para Quintales (Qt) - Color Café/Marrón
+                    // Fila para Quintales (Qt) - DATO REAL
                     BalanceRow(
                         icon = Res.drawable.coffee_logo,
-                        amount = "5,000 Qt",
-                        containerColor = Brown500_10, // Marrón café muy suave
-                        contentColor = Brown500 // Marrón oscuro para el texto e icono
+                        amount = "${state.totalQuintales} Qt",
+                        containerColor = Brown500_10,
+                        contentColor = Brown500
                     )
 
                     Spacer(Modifier.height(12.dp))
 
-                    // Fila para Dólares ($) - Color Verde Éxito
+                    // Fila para Dólares ($) - DATO REAL
                     BalanceRow(
                         icon = Res.drawable.dollar,
-                        amount = "1,340.00 $",
-                        containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f), // Verde de tu app suave
-                        contentColor = MaterialTheme.colorScheme.primary // Verde de tu app sólido
+                        amount = "${state.totalDollars} $",
+                        containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+                        contentColor = MaterialTheme.colorScheme.primary
                     )
                 }
             }
@@ -142,21 +154,30 @@ object HomeTab : Tab {
 
             Spacer(Modifier.height(12.dp))
 
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(5) {
-                    MainPaymentItem(
-                        customerNickname = "Roberto",
-                        customerName = "Roberto Cuji",
-                        customerPhoto = "", // Aquí iría la URL o Path
-                        amount = "2 Qt",
-                        date = "Hoy, 10:30 AM",
-                        onClick = {}
-                    )
+            // LISTA REAL
+            if (state.isLoading) {
+                Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
                 }
-                item {
-                    Spacer(Modifier.height(30.dp))
+            } else {
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(state.recentLoans) { (loan, customer) ->
+                        MainPaymentItem(
+                            customerNickname = customer.nickname,
+                            customerName = customer.name,
+                            customerPhoto = customer.photo,
+                            amount = "${loan.quantity} ${loan.paymentType}",
+                            date = DateMethods.formatDate(loan.creationDate), // Formatear fecha real
+                            onClick = {
+                                // Navegación al detalle si lo deseas
+                            }
+                        )
+                    }
+                    item {
+                        Spacer(Modifier.height(30.dp))
+                    }
                 }
             }
         }

@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-
+import com.yolbertdev.coffeeplatform.domain.model.UserSession
 data class LoginState(
     val username: String = "",
     val password: String = "",
@@ -31,6 +31,7 @@ class LoginScreenModel(
             _state.update { it.copy(isLoading = true) }
             val user = loginUseCase(s.username, s.password)
             if (user != null) {
+                UserSession.currentUser = user
                 _state.update { it.copy(isLoggedIn = true, isLoading = false) }
             } else {
                 _state.update { it.copy(isLoading = false, error = "Credenciales incorrectas") }
