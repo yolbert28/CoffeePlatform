@@ -1,14 +1,9 @@
 package com.yolbertdev.coffeeplatform.ui.main
 
-// 1. CAMBIO: Importamos Box y Row en lugar de FlowRow
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -31,15 +26,12 @@ import com.yolbertdev.coffeeplatform.ui.main.screens.customer.CustomerTab
 import com.yolbertdev.coffeeplatform.ui.main.screens.home.HomeTab
 import com.yolbertdev.coffeeplatform.ui.main.screens.loan.LoanTab
 import com.yolbertdev.coffeeplatform.ui.main.screens.payment.PaymentTab
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
+
 class MainScreen : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
         val windowSize = currentWindowAdaptiveInfo().windowSizeClass
-
-        // Lógica para detectar pantalla expandida (Tablet/Desktop/Horizontal)
         val medium = windowSize.isWidthAtLeastBreakpoint(WindowSizeClass.Companion.WIDTH_DP_EXPANDED_LOWER_BOUND)
 
         TabNavigator(
@@ -79,34 +71,18 @@ class MainScreen : Screen {
                     }
                 },
                 bottomBar = {
-                    // Si NO es medium (es decir, es teléfono vertical), mostramos la barra inferior
                     if (!medium) {
                         CustomNavigationBar()
                     }
-                },
-                floatingActionButton = {
-                    FloatingActionButton(
-                        onClick = {},
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = Color.White
-                    ){
-                        Icon(
-                            imageVector = Icons.Default.Add,
-                            contentDescription = null
-                        )
-                    }
                 }
+                // ELIMINADO: floatingActionButton que causaba duplicidad
             ) { innerPadding ->
-
-                // 2. CORRECCIÓN: Usamos Row en lugar de FlowRow
                 Row(
                     modifier = Modifier.padding(innerPadding)
                 ) {
-
                     if (medium) {
                         CustomNavigationRail()
                     }
-
                     Box(modifier = Modifier.weight(1f)) {
                         CurrentTab()
                     }

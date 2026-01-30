@@ -16,11 +16,16 @@ data class AddLoanUiState(
     val customers: List<Customer> = emptyList(),
     val selectedCustomer: Customer? = null,
     val amount: String = "",
-    val interestRate: String = "10", // 10% por defecto
+    val interestRate: String = "10",
     val description: String = "",
-    val selectedCurrencyIndex: Int = 0, // 0 = USD, 1 = QT
+    val selectedCurrencyIndex: Int = 0,
+    val paymentDate: Long = DateMethods.getCurrentTimeMillis() + 2592000000L,
     val isLoading: Boolean = false,
-    val isSuccess: Boolean = false
+
+    // Nuevos campos para validación y feedback
+    val amountError: String? = null,
+    val customerError: String? = null,
+    val showSuccessMessage: Boolean = false
 )
 
 class AddLoanScreenModel(
@@ -38,7 +43,6 @@ class AddLoanScreenModel(
     private fun loadCustomers() {
         screenModelScope.launch {
             try {
-                // Obtenemos clientes para el Dropdown
                 val customersList = selectAllCustomerUseCase()
                 _uiState.update { it.copy(customers = customersList) }
             } catch (e: Exception) {
@@ -48,18 +52,16 @@ class AddLoanScreenModel(
     }
 
     fun onCustomerSelected(customer: Customer) {
-        _uiState.update { it.copy(selectedCustomer = customer) }
+        _uiState.update { it.copy(selectedCustomer = customer, customerError = null) }
     }
 
     fun onAmountChanged(amount: String) {
-        // Solo permitir números y un punto decimal
         if (amount.all { it.isDigit() || it == '.' }) {
-            _uiState.update { it.copy(amount = amount) }
+            _uiState.update { it.copy(amount = amount, amountError = null) }
         }
     }
 
     fun onInterestChanged(interest: String) {
-        // Permitimos decimales en el interés también por si acaso (ej: 10.5)
         if (interest.all { it.isDigit() || it == '.' }) {
             _uiState.update { it.copy(interestRate = interest) }
         }
@@ -72,43 +74,62 @@ class AddLoanScreenModel(
     fun onCurrencyChanged(index: Int) {
         _uiState.update { it.copy(selectedCurrencyIndex = index) }
     }
-
-    fun saveLoan(onSuccess: () -> Unit) {
+    fun onPaymentDateChanged(dateMillis: Long) {
+        _uiState.update { it.copy(paymentDate = dateMillis) }
+    }
+    fun saveLoan() {
         val state = _uiState.value
-        // Validación básica
-        if (state.selectedCustomer == null || state.amount.isBlank()) return
+        var hasError = false
 
+        // 1. Validaciones
+        if (state.selectedCustomer == null) {
+            _uiState.update { it.copy(customerError = "Debes seleccionar un cliente") }
+            hasError = true
+        }
+
+        val amountValue = state.amount.toDoubleOrNull()
+        if (amountValue == null || amountValue <= 0.0) {
+            _uiState.update { it.copy(amountError = "Ingresa un monto válido mayor a 0") }
+            hasError = true
+        }
+
+        if (hasError) return
+
+        // 2. Guardado
         screenModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             try {
                 val paymentTypeString = if (state.selectedCurrencyIndex == 0) "USD" else "QT"
-
-                // Tiempos en milisegundos
                 val currentTime = DateMethods.getCurrentTimeMillis()
                 val paymentTime = currentTime + 2592000000L // +30 días
 
                 val loan = Loan(
                     id = 0,
-                    customerId = state.selectedCustomer.id.toInt(),
+                    customerId = state.selectedCustomer!!.id.toInt(),
                     interestRate = state.interestRate.toDoubleOrNull() ?: 0.0,
                     description = state.description,
-                    paymentDate = paymentTime, // Pasamos el Long directo
+                    paymentDate = paymentTime,
                     paymentType = paymentTypeString,
-                    quantity = state.amount.toDoubleOrNull() ?: 0.0,
+                    quantity = amountValue!!,
                     paid = 0.0,
                     statusId = 1,
-                    creationDate = currentTime, // Pasamos el Long directo
-                    updateDate = currentTime    // Pasamos el Long directo
+                    creationDate = currentTime,
+                    updateDate = currentTime
                 )
 
                 insertLoanUseCase(loan)
-                onSuccess()
+                // Indicamos éxito para que la UI reaccione
+                _uiState.update { it.copy(showSuccessMessage = true) }
             } catch (e: Exception) {
                 e.printStackTrace()
-                // Aquí podrías actualizar un estado de error si quisieras mostrarlo en UI
             } finally {
                 _uiState.update { it.copy(isLoading = false) }
             }
         }
+    }
+
+    // Resetea el flag después de navegar
+    fun onNavigationHandled() {
+        _uiState.update { it.copy(showSuccessMessage = false) }
     }
 }

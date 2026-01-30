@@ -2,3 +2,10 @@ CREATE TABLE payment_type (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL
 );
+
+selectAll:
+SELECT * FROM payment_type;
+
+-- CAMBIO: Renombramos la función para forzar la actualización
+insertNew:
+INSERT INTO payment_type(name) VALUES (?);
