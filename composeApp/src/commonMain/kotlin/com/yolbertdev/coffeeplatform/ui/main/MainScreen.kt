@@ -1,6 +1,8 @@
 package com.yolbertdev.coffeeplatform.ui.main
 
-import androidx.compose.foundation.layout.FlowRow
+// 1. CAMBIO: Importamos Box y Row en lugar de FlowRow
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -16,7 +18,6 @@ import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.window.core.layout.WindowSizeClass
 import cafe.adriel.voyager.core.screen.Screen
@@ -25,19 +26,20 @@ import cafe.adriel.voyager.navigator.tab.TabDisposable
 import cafe.adriel.voyager.navigator.tab.TabNavigator
 import com.yolbertdev.coffeeplatform.ui.components.navigation.CustomNavigationBar
 import com.yolbertdev.coffeeplatform.ui.components.navigation.CustomNavigationRail
-import com.yolbertdev.coffeeplatform.ui.main.screens.customer.CustomerTab
-import com.yolbertdev.coffeeplatform.ui.main.screens.loan.LoanTab
-import com.yolbertdev.coffeeplatform.ui.main.screens.home.HomeTab
-import com.yolbertdev.coffeeplatform.ui.main.screens.payment.PaymentTab
 import com.yolbertdev.coffeeplatform.ui.main.screens.ReportTab
-import okhttp3.internal.wait
-
+import com.yolbertdev.coffeeplatform.ui.main.screens.customer.CustomerTab
+import com.yolbertdev.coffeeplatform.ui.main.screens.home.HomeTab
+import com.yolbertdev.coffeeplatform.ui.main.screens.loan.LoanTab
+import com.yolbertdev.coffeeplatform.ui.main.screens.payment.PaymentTab
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 class MainScreen : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
         val windowSize = currentWindowAdaptiveInfo().windowSizeClass
 
+        // Lógica para detectar pantalla expandida (Tablet/Desktop/Horizontal)
         val medium = windowSize.isWidthAtLeastBreakpoint(WindowSizeClass.Companion.WIDTH_DP_EXPANDED_LOWER_BOUND)
 
         TabNavigator(
@@ -50,13 +52,12 @@ class MainScreen : Screen {
             }
         ) { tabNavigator ->
 
-            // Determinar el título basado en la sección actual
             val sectionTitle = when (tabNavigator.current) {
                 is CustomerTab -> "Gestión de Clientes"
                 is PaymentTab -> "Gestión de Pagos"
                 is LoanTab -> "Gestión de Préstamos"
                 is ReportTab -> "Reportes"
-                else -> null // Home no lleva TopAppBar
+                else -> null
             }
 
             Scaffold(
@@ -78,6 +79,7 @@ class MainScreen : Screen {
                     }
                 },
                 bottomBar = {
+                    // Si NO es medium (es decir, es teléfono vertical), mostramos la barra inferior
                     if (!medium) {
                         CustomNavigationBar()
                     }
@@ -96,16 +98,20 @@ class MainScreen : Screen {
                 }
             ) { innerPadding ->
 
-                FlowRow(
-                    modifier = Modifier.Companion.padding(innerPadding)
+                // 2. CORRECCIÓN: Usamos Row en lugar de FlowRow
+                Row(
+                    modifier = Modifier.padding(innerPadding)
                 ) {
+
                     if (medium) {
                         CustomNavigationRail()
                     }
-                    CurrentTab()
+
+                    Box(modifier = Modifier.weight(1f)) {
+                        CurrentTab()
+                    }
                 }
             }
         }
     }
-
 }

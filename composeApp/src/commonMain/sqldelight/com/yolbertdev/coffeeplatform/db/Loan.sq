@@ -1,7 +1,7 @@
 CREATE TABLE loan (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     customer_id INTEGER NOT NULL,
-    interest_rate INTEGER NOT NULL,
+    interest_rate REAL NOT NULL,
     payment_type_id INTEGER NOT NULL,
     amount REAL NOT NULL,
     payment_date INTEGER NOT NULL,
@@ -27,3 +27,10 @@ INNER JOIN payment_type ON loan.payment_type_id = payment_type.id;
 insert:
 INSERT INTO loan(customer_id, interest_rate, payment_type_id, amount, payment_date, paid, description, status_id)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+selectByCustomerId:
+SELECT * FROM loan WHERE customer_id = ?;
+selectAllWithCustomer:
+SELECT
+    loan.*,
+    customer.* FROM loan
+INNER JOIN customer ON loan.customer_id = customer.id;

@@ -22,3 +22,5 @@ INNER JOIN payment_type ON payment.payment_type_id = payment_type.id;
 insert:
 INSERT INTO payment(amount, payment_type_id, customer_id)
 VALUES (?, ?, ?);
+selectByCustomerId:
+SELECT * FROM payment WHERE customer_id = ?;

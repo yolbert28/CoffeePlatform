@@ -19,6 +19,10 @@ import com.yolbertdev.coffeeplatform.data.database.repository.LoanRepositoryImpl
 import com.yolbertdev.coffeeplatform.data.database.repository.PaymentRepositoryImpl
 import com.yolbertdev.coffeeplatform.domain.repository.LoanRepository
 import com.yolbertdev.coffeeplatform.domain.repository.PaymentRepository
+import com.yolbertdev.coffeeplatform.domain.usecase.InsertLoanUseCase
+import com.yolbertdev.coffeeplatform.ui.main.screens.customer.detail.CustomerDetailScreenModel
+import com.yolbertdev.coffeeplatform.ui.main.screens.loan.LoanScreenModel
+import com.yolbertdev.coffeeplatform.ui.main.screens.loan.add.AddLoanScreenModel
 
 val commonModule = module {
     single<CoffeeDatabase> { CoffeeDatabase(get()) }
@@ -27,13 +31,15 @@ val commonModule = module {
     single<PaymentDao> { PaymentDao(get()) }
     single<HomeScreenModel> { HomeScreenModel() }
     single<CustomerScreenModel>{CustomerScreenModel(get(), get())}
+    single { InsertLoanUseCase(get()) }
 
     factory<AddCustomerScreenModel>{ AddCustomerScreenModel(get())}
-
+    factory { AddLoanScreenModel(get(), get()) }
     single<InsertCustomerUseCase>{InsertCustomerUseCase(get())}
     single<SelectAllCustomerUseCase>{SelectAllCustomerUseCase(get())}
     singleOf(::CustomerRepositoryImpl) bind CustomerRepository::class
     singleOf(::LoanRepositoryImpl) bind LoanRepository::class
     singleOf(::PaymentRepositoryImpl) bind PaymentRepository::class
-
+    factory { CustomerDetailScreenModel(get()) }
+    factory { LoanScreenModel(get()) }
     factory { ReportViewModel(get(),get(),get()) }}

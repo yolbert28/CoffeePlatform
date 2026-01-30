@@ -15,7 +15,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -26,10 +25,12 @@ import coil3.compose.AsyncImage
 import com.yolbertdev.coffeeplatform.domain.model.Customer
 import com.yolbertdev.coffeeplatform.domain.model.Loan
 import com.yolbertdev.coffeeplatform.ui.components.DetailRow
-import com.yolbertdev.coffeeplatform.ui.components.ListItemFormatRow
 import com.yolbertdev.coffeeplatform.ui.components.StatusBadge
 import com.yolbertdev.coffeeplatform.ui.main.screens.customer.detail.CustomerDetailScreen
 import com.yolbertdev.coffeeplatform.ui.theme.Gray200
+// 1. IMPORTAR ESTO
+import com.yolbertdev.coffeeplatform.util.DateMethods
+import java.io.File
 
 data class LoanDetailScreen(val loan: Loan, val customer: Customer) : Screen {
 
@@ -102,8 +103,15 @@ data class LoanDetailScreen(val loan: Loan, val customer: Customer) : Screen {
                         modifier = Modifier.padding(16.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
+                        // Manejo seguro de imagen local
+                        val model = if (customer.photo.isNotEmpty() && File(customer.photo).exists()) {
+                            File(customer.photo)
+                        } else {
+                            null
+                        }
+
                         AsyncImage(
-                            model = customer.photo,
+                            model = model,
                             contentDescription = customer.name,
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
@@ -143,13 +151,27 @@ data class LoanDetailScreen(val loan: Loan, val customer: Customer) : Screen {
                 ) {
                     Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
                         DetailRow(Icons.Rounded.Description, "Descripción", loan.description)
-                        DetailRow(Icons.Rounded.Percent, "Tasa de interés", "${loan.interestRate * 100}%")
-                        DetailRow(Icons.Rounded.Event, "Fecha de creación", loan.creationDate)
-                        DetailRow(Icons.Rounded.CalendarMonth, "Fecha límite de pago", loan.paymentDate)
+                        // Si interestRate es 0.10 (10%), lo multiplicamos por 100 para mostrar "10.0%"
+                        DetailRow(Icons.Rounded.Percent, "Tasa de interés", "${loan.interestRate}%")
+
+                        // 2. CORRECCIÓN AQUI: Usar DateMethods.formatDate
+                        DetailRow(
+                            Icons.Rounded.Event,
+                            "Fecha de creación",
+                            DateMethods.formatDate(loan.creationDate)
+                        )
+
+                        // 3. CORRECCIÓN AQUI: Usar DateMethods.formatDate
+                        DetailRow(
+                            Icons.Rounded.CalendarMonth,
+                            "Fecha límite de pago",
+                            DateMethods.formatDate(loan.paymentDate)
+                        )
+
                         DetailRow(Icons.Rounded.Paid, "Cantidad pagada", "${loan.paid} ${loan.paymentType}")
                     }
                 }
-                
+
                 Spacer(Modifier.height(16.dp))
             }
         }

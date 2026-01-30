@@ -13,29 +13,27 @@ import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Payments
-import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import coil3.compose.AsyncImage
 import com.yolbertdev.coffeeplatform.domain.model.Customer
-import com.yolbertdev.coffeeplatform.domain.model.Loan
 import com.yolbertdev.coffeeplatform.ui.components.ListItemFormatRow
 import com.yolbertdev.coffeeplatform.ui.components.LoanItem
 import com.yolbertdev.coffeeplatform.ui.components.PaymentItem
 import com.yolbertdev.coffeeplatform.ui.components.SearchBarApp
-import com.yolbertdev.coffeeplatform.ui.components.TextFieldApp
 import com.yolbertdev.coffeeplatform.ui.theme.Gray200
+import java.io.File
 
 enum class CustomerDetailSection(val title: String, val icon: ImageVector) {
     INFO("Información", Icons.Rounded.Info),
@@ -48,23 +46,17 @@ data class CustomerDetailScreen(val customer: Customer) : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-        var selectedSection by remember { mutableStateOf(CustomerDetailSection.INFO) }
-        var searchQuery by remember { mutableStateOf("") }
 
-        // Mock data para préstamos (esto debería venir de un ScreenModel)
-        val mockLoan = Loan(
-            id = 1,
-            customerId = 1,
-            interestRate = 0.125,
-            description = "Préstamo de prueba",
-            paymentDate = "12/03/2024",
-            paymentType = "Dólares",
-            quantity = 1000.0,
-            paid = 0.0,
-            statusId = 1,
-            creationDate = "12/12/2023",
-            updateDate = "12/10/2023"
-        )
+        // Inyección del ViewModel
+        val viewModel = getScreenModel<CustomerDetailScreenModel>()
+        val state by viewModel.uiState.collectAsState()
+
+        // Efecto lanzado una sola vez para cargar los datos
+        LaunchedEffect(customer.id) {
+            viewModel.loadData(customer.id)
+        }
+
+        var selectedSection by remember { mutableStateOf(CustomerDetailSection.INFO) }
 
         Scaffold(
             topBar = {
@@ -94,13 +86,23 @@ data class CustomerDetailScreen(val customer: Customer) : Screen {
                     modifier = Modifier.fillMaxWidth().padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    // Manejo seguro de la imagen local
+                    val model = if (customer.photo.isNotEmpty() && File(customer.photo).exists()) {
+                        File(customer.photo)
+                    } else {
+                        // Un placeholder o recurso por defecto si no hay foto
+                        // Res.drawable.default_avatar
+                        null
+                    }
+
                     AsyncImage(
-                        model = customer.photo,
+                        model = model,
                         contentDescription = customer.name,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .size(120.dp)
                             .clip(CircleShape)
+                            .background(Gray200) // Fondo gris mientras carga o si es null
                     )
                     Spacer(Modifier.height(12.dp))
                     Text(
@@ -113,9 +115,8 @@ data class CustomerDetailScreen(val customer: Customer) : Screen {
                     )
                     Spacer(Modifier.height(16.dp))
 
-                    // BOTÓN DE EDICIÓN ESTILO INSTAGRAM
                     OutlinedButton(
-                        onClick = { /* TODO: Abrir Modal de Edición */ },
+                        onClick = { /* TODO: Navegar a pantalla de edición */ },
                         shape = RoundedCornerShape(10.dp),
                         modifier = Modifier.fillMaxWidth(0.6f),
                         colors = ButtonDefaults.outlinedButtonColors(
@@ -128,7 +129,7 @@ data class CustomerDetailScreen(val customer: Customer) : Screen {
                     }
                 }
 
-                // Selector de Secciones (Tipo Instagram)
+                // Selector de Secciones
                 SecondaryTabRow(
                     selectedTabIndex = selectedSection.ordinal,
                     containerColor = MaterialTheme.colorScheme.surface,
@@ -155,46 +156,58 @@ data class CustomerDetailScreen(val customer: Customer) : Screen {
                     }
                 }
 
-                // Contenido Dinámico
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
-                    contentPadding = PaddingValues(vertical = 16.dp)
-                ) {
-                    when (selectedSection) {
-                        CustomerDetailSection.INFO -> {
-                            item {
-                                InfoSection(customer)
+                // Contenido Dinámico con LazyColumn
+                if (state.isLoading) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator()
+                    }
+                } else {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
+                        contentPadding = PaddingValues(vertical = 16.dp)
+                    ) {
+                        when (selectedSection) {
+                            CustomerDetailSection.INFO -> {
+                                item {
+                                    InfoSection(customer)
+                                }
                             }
-                        }
 
-                        CustomerDetailSection.LOANS -> {
-                            item {
-                                var searchQuery by remember { mutableStateOf("") }
+                            CustomerDetailSection.LOANS -> {
+                                item {
+                                    // Podrías mover el estado del search al ViewModel si quieres filtrar la lista 'state.loans'
+                                    var searchQuery by remember { mutableStateOf("") }
+                                    SearchBarApp(
+                                        value = searchQuery,
+                                        onValueChange = { searchQuery = it },
+                                        placeholder = "Buscar préstamos..."
+                                    )
+                                    Spacer(Modifier.height(8.dp))
+                                }
 
-                                // Barra de búsqueda reutilizable
-                                SearchBarApp(
-                                    value = searchQuery,
-                                    onValueChange = { searchQuery = it },
-                                    placeholder = "Buscar por cliente o descripción..."
-                                )
-
-                                Spacer(Modifier.height(4.dp))
+                                // Renderizar lista real
+                                if (state.loans.isEmpty()) {
+                                    item {
+                                        Text("No hay préstamos registrados", modifier = Modifier.padding(16.dp))
+                                    }
+                                } else {
+                                    items(state.loans) { loan ->
+                                        LoanItem(loan = loan, onClick = { /* TODO: Ir a detalle préstamo */ })
+                                        Spacer(Modifier.height(8.dp))
+                                    }
+                                }
                             }
-                            // Aquí irían los préstamos reales del cliente
-                            items(5) {
-                                LoanItem(mockLoan, onClick = {})
-                                Spacer(Modifier.height(8.dp))
-                            }
-                        }
 
-                        CustomerDetailSection.PAYMENTS -> {
-                            items(3) { index ->
-                                PaymentItem(
-                                    amount = 50.0 + (index * 10),
-                                    paymentType = if (index % 2 == 0) "Efectivo" else "Transferencia",
-                                    date = "2${index}/05/2024"
-                                )
-                                Spacer(Modifier.height(8.dp))
+                            CustomerDetailSection.PAYMENTS -> {
+                                // Aquí iría la lógica similar para pagos cuando tengas el repositorio
+                                item {
+                                    Text("Funcionalidad de Pagos en construcción")
+                                }
+                                /*
+                                items(state.payments) { payment ->
+                                    PaymentItem(...)
+                                }
+                                */
                             }
                         }
                     }
@@ -221,6 +234,7 @@ data class CustomerDetailScreen(val customer: Customer) : Screen {
                 value = customer.location,
                 style = MaterialTheme.typography.bodyLarge
             )
+            // Puedes agregar más campos aquí, como fecha de registro, etc.
         }
     }
 }

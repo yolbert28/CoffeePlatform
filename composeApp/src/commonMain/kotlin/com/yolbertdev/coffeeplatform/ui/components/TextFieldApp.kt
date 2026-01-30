@@ -5,6 +5,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 
 @Composable
 fun TextFieldApp(
@@ -13,6 +14,8 @@ fun TextFieldApp(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     readOnly: Boolean = false,
+    label: String? = null,
+    imageVector: ImageVector? = null, // CAMBIO: Ahora es opcional (nullable) y por defecto null
     placeholder: @Composable (() -> Unit)? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
@@ -23,20 +26,20 @@ fun TextFieldApp(
         readOnly = readOnly,
         enabled = enabled,
         placeholder = placeholder,
-        leadingIcon = leadingIcon,
+        // Solo mostramos el leadingIcon si nos pasan uno explícito O si hay imageVector
+        leadingIcon = if (leadingIcon != null) leadingIcon else if (imageVector != null) {
+            { Icon(imageVector, contentDescription = null) }
+        } else null,
         trailingIcon = trailingIcon,
         singleLine = true,
         modifier = modifier.fillMaxWidth(),
         colors = TextFieldDefaults.colors(
-            // Fondo transparente porque el contenedor (Surface) ya tiene el color
             focusedContainerColor = Color.Transparent,
             unfocusedContainerColor = Color.Transparent,
             disabledContainerColor = Color.Transparent,
-            // Sin líneas indicadoras inferiores
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
             disabledIndicatorColor = Color.Transparent,
-            // Colores de texto
             focusedTextColor = MaterialTheme.colorScheme.onSurface,
             unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
             cursorColor = MaterialTheme.colorScheme.primary

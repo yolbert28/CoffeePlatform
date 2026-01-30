@@ -21,6 +21,8 @@ import com.yolbertdev.coffeeplatform.domain.model.Loan
 import com.yolbertdev.coffeeplatform.ui.theme.Gray200
 import com.yolbertdev.coffeeplatform.ui.theme.Yellow300
 import com.yolbertdev.coffeeplatform.ui.theme.Yellow500
+// 1. IMPORTANTE: Agregar este import
+import com.yolbertdev.coffeeplatform.util.DateMethods
 
 @Composable
 fun LoanItem(loan: Loan, onClick: () -> Unit) {
@@ -94,15 +96,27 @@ fun LoanItem(loan: Loan, onClick: () -> Unit) {
                     LoanDetailInfo(
                         Icons.Rounded.Percent,
                         "Interés",
-                        "${(loan.interestRate * 100)}%"
+                        "${(loan.interestRate)}%" // Eliminé el *100 si ya lo guardas como entero, ajusta según tu lógica
                     )
                     Spacer(Modifier.height(8.dp))
-                    LoanDetailInfo(Icons.Rounded.Event, "Creación", loan.creationDate)
+
+                    // 2. CORRECCIÓN: Usar DateMethods.formatDate para convertir Long -> String
+                    LoanDetailInfo(
+                        Icons.Rounded.Event,
+                        "Creación",
+                        DateMethods.formatDate(loan.creationDate)
+                    )
                 }
                 Column(modifier = Modifier.weight(1f)) {
                     LoanDetailInfo(Icons.Rounded.Payments, "Tasa", loan.paymentType)
                     Spacer(Modifier.height(8.dp))
-                    LoanDetailInfo(Icons.Rounded.CalendarMonth, "Pago", loan.paymentDate)
+
+                    // 3. CORRECCIÓN: Usar DateMethods.formatDate
+                    LoanDetailInfo(
+                        Icons.Rounded.CalendarMonth,
+                        "Pago",
+                        DateMethods.formatDate(loan.paymentDate)
+                    )
                 }
             }
         }

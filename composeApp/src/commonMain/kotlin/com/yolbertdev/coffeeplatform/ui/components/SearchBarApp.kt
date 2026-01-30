@@ -60,7 +60,7 @@ fun SearchBarApp(
                         modifier = Modifier.size(24.dp)
                     )
                 }
-            }
+            },
         )
     }
 }
