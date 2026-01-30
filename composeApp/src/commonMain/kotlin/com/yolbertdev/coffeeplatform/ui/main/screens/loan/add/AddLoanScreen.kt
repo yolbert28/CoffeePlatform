@@ -5,13 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.AttachMoney
-import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.Description
-import androidx.compose.material.icons.filled.Event
-import androidx.compose.material.icons.filled.Percent
-import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,10 +15,12 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.yolbertdev.coffeeplatform.domain.model.Customer
 import com.yolbertdev.coffeeplatform.ui.components.PrimaryButton
 import com.yolbertdev.coffeeplatform.ui.components.TextFieldApp
-import kotlinx.coroutines.delay
 import com.yolbertdev.coffeeplatform.util.DateMethods
+import kotlinx.coroutines.delay
+
 class AddLoanScreen : Screen {
 
     @OptIn(ExperimentalMaterial3Api::class)
@@ -34,51 +30,68 @@ class AddLoanScreen : Screen {
         val viewModel = getScreenModel<AddLoanScreenModel>()
         val state by viewModel.uiState.collectAsState()
 
-        // Estado para el Snackbar
         val snackbarHostState = remember { SnackbarHostState() }
-        var showDatePicker by remember { mutableStateOf(false) }
-        val datePickerState = rememberDatePickerState(
+
+        // --- ESTADOS PARA LOS DOS CALENDARIOS ---
+        var showPaymentDatePicker by remember { mutableStateOf(false) }
+        var showCreationDatePicker by remember { mutableStateOf(false) }
+
+        // State del picker de Pago
+        val paymentDatePickerState = rememberDatePickerState(
             initialSelectedDateMillis = state.paymentDate
         )
+        // State del picker de Creación
+        val creationDatePickerState = rememberDatePickerState(
+            initialSelectedDateMillis = state.creationDate
+        )
 
-        // Efecto para manejar el éxito del guardado
         LaunchedEffect(state.showSuccessMessage) {
             if (state.showSuccessMessage) {
                 snackbarHostState.showSnackbar("¡Préstamo creado correctamente!")
-                delay(1000) // Espera un poco para que el usuario lea el mensaje
+                delay(1000)
                 viewModel.onNavigationHandled()
                 navigator.pop()
             }
         }
-        if (showDatePicker) {
+
+        // --- DIÁLOGO FECHA DE PAGO ---
+        if (showPaymentDatePicker) {
             DatePickerDialog(
-                onDismissRequest = { showDatePicker = false },
+                onDismissRequest = { showPaymentDatePicker = false },
                 confirmButton = {
                     TextButton(onClick = {
-                        // AQUÍ CAPTURAMOS LA FECHA SELECCIONADA
-                        datePickerState.selectedDateMillis?.let { date ->
-                            // Truco opcional: Sumar 12 horas (43200000ms) para evitar problemas de zona horaria
-                            // y que caiga al día anterior si estás en UTC-4.
-                            // O simplemente pasar 'date' tal cual si DateMethods maneja UTC.
-                            // Por ahora pasamos 'date' directo, asumiendo que solo quieres guardar el timestamp.
+                        paymentDatePickerState.selectedDateMillis?.let { date ->
                             viewModel.onPaymentDateChanged(date)
                         }
-                        showDatePicker = false
-                    }) {
-                        Text("Aceptar")
-                    }
+                        showPaymentDatePicker = false
+                    }) { Text("Aceptar") }
                 },
                 dismissButton = {
-                    TextButton(onClick = { showDatePicker = false }) {
-                        Text("Cancelar")
-                    }
+                    TextButton(onClick = { showPaymentDatePicker = false }) { Text("Cancelar") }
                 }
-            ) {
-                DatePicker(state = datePickerState)
-            }
+            ) { DatePicker(state = paymentDatePickerState) }
         }
+
+        // --- DIÁLOGO FECHA DE CREACIÓN ---
+        if (showCreationDatePicker) {
+            DatePickerDialog(
+                onDismissRequest = { showCreationDatePicker = false },
+                confirmButton = {
+                    TextButton(onClick = {
+                        creationDatePickerState.selectedDateMillis?.let { date ->
+                            viewModel.onCreationDateChanged(date)
+                        }
+                        showCreationDatePicker = false
+                    }) { Text("Aceptar") }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showCreationDatePicker = false }) { Text("Cancelar") }
+                }
+            ) { DatePicker(state = creationDatePickerState) }
+        }
+
         Scaffold(
-            snackbarHost = { SnackbarHost(snackbarHostState) }, // Agregamos el Host
+            snackbarHost = { SnackbarHost(snackbarHostState) },
             topBar = {
                 TopAppBar(
                     title = { Text("Nuevo Préstamo") },
@@ -107,7 +120,6 @@ class AddLoanScreen : Screen {
                         selectedCustomer = state.selectedCustomer,
                         onCustomerSelected = { viewModel.onCustomerSelected(it) }
                     )
-                    // Mensaje de error para Cliente
                     if (state.customerError != null) {
                         Text(
                             text = state.customerError!!,
@@ -126,7 +138,6 @@ class AddLoanScreen : Screen {
                         label = "Monto a prestar",
                         imageVector = Icons.Default.AttachMoney
                     )
-                    // Mensaje de error para Monto
                     if (state.amountError != null) {
                         Text(
                             text = state.amountError!!,
@@ -152,47 +163,55 @@ class AddLoanScreen : Screen {
                         )
                     }
                 }
+
+                // --- SECCIÓN DE FECHAS ---
+                Text("Fechas", style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.primary)
+
+                // 4. FECHA DE CREACIÓN (EMISIÓN)
                 Box(modifier = Modifier.fillMaxWidth()) {
                     TextFieldApp(
-                        value = DateMethods.formatDate(state.paymentDate), // Muestra lo que hay en el State
+                        value = DateMethods.formatDate(state.creationDate),
+                        onValueChange = { },
+                        label = "Fecha de Emisión",
+                        readOnly = true,
+                        imageVector = Icons.Default.DateRange,
+                        trailingIcon = { Icon(Icons.Default.DateRange, null) }
+                    )
+                    Box(
+                        modifier = Modifier
+                            .matchParentSize()
+                            .clickable { showCreationDatePicker = true }
+                    )
+                }
+
+                // 5. FECHA DE VENCIMIENTO
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    TextFieldApp(
+                        value = DateMethods.formatDate(state.paymentDate),
                         onValueChange = { },
                         label = "Fecha de Vencimiento",
                         readOnly = true,
-                        imageVector = Icons.Default.Event, // Icono de calendario
+                        imageVector = Icons.Default.Event,
                         trailingIcon = { Icon(Icons.Default.Event, null) }
                     )
                     Box(
                         modifier = Modifier
                             .matchParentSize()
-                            .clickable { showDatePicker = true } // Abre el calendario
+                            .clickable { showPaymentDatePicker = true }
                     )
                 }
-                // 4. Interés
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // 6. Interés
                 TextFieldApp(
                     value = state.interestRate,
                     onValueChange = { viewModel.onInterestChanged(it) },
                     label = "Tasa de Interés (%)",
                     imageVector = Icons.Default.Percent
                 )
-                Box(modifier = Modifier.fillMaxWidth()) {
-                    TextFieldApp(
-                        value = DateMethods.formatDate(state.paymentDate), // Formateamos la fecha
-                        onValueChange = { }, // No hace nada manual
-                        label = "Fecha de Vencimiento",
-                        readOnly = true, // No editable manualmente
-                        imageVector = Icons.Default.CalendarMonth,
-                        trailingIcon = {
-                            Icon(Icons.Default.CalendarMonth, contentDescription = null)
-                        }
-                    )
-                    // Capa invisible clickable
-                    Box(
-                        modifier = Modifier
-                            .matchParentSize()
-                            .clickable { showDatePicker = true }
-                    )
-                }
-                // 5. Descripción
+
+                // 7. Descripción
                 TextFieldApp(
                     value = state.description,
                     onValueChange = { viewModel.onDescriptionChanged(it) },
@@ -202,14 +221,13 @@ class AddLoanScreen : Screen {
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // 6. Botón Guardar
+                // 8. Botón Guardar
                 if (state.isLoading) {
                     CircularProgressIndicator()
                 } else {
                     PrimaryButton(
                         text = "Crear Préstamo",
-                        onClick = { viewModel.saveLoan() }, // Ya no pasamos lambda, el ViewModel maneja estado
-                        // Deshabilitamos validación simple aquí para dejar que el ViewModel muestre los errores detallados
+                        onClick = { viewModel.saveLoan() },
                         enabled = !state.isLoading
                     )
                 }
@@ -218,12 +236,13 @@ class AddLoanScreen : Screen {
     }
 }
 
+// ... CustomerDropdown sigue igual ...
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomerDropdown(
-    customers: List<com.yolbertdev.coffeeplatform.domain.model.Customer>,
-    selectedCustomer: com.yolbertdev.coffeeplatform.domain.model.Customer?,
-    onCustomerSelected: (com.yolbertdev.coffeeplatform.domain.model.Customer) -> Unit
+    customers: List<Customer>,
+    selectedCustomer: Customer?,
+    onCustomerSelected: (Customer) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 

@@ -19,6 +19,7 @@ data class AddLoanUiState(
     val interestRate: String = "10",
     val description: String = "",
     val selectedCurrencyIndex: Int = 0,
+    val creationDate: Long = DateMethods.getCurrentTimeMillis(),
     val paymentDate: Long = DateMethods.getCurrentTimeMillis(),
     val isLoading: Boolean = false,
     // Nuevos campos para validación y feedback
@@ -76,6 +77,9 @@ class AddLoanScreenModel(
     fun onPaymentDateChanged(dateMillis: Long) {
         _uiState.update { it.copy(paymentDate = dateMillis) }
     }
+    fun onCreationDateChanged(dateMillis: Long) {
+        _uiState.update { it.copy(creationDate = dateMillis) }
+    }
     fun saveLoan() {
         val state = _uiState.value
         var hasError = false
@@ -100,6 +104,7 @@ class AddLoanScreenModel(
             try {
                 val paymentTypeString = if (state.selectedCurrencyIndex == 0) "USD" else "QT"
                 val currentTime = DateMethods.getCurrentTimeMillis()
+                val creationTime = state.creationDate
                 val paymentTime = state.paymentDate
 
                 val loan = Loan(
@@ -112,7 +117,7 @@ class AddLoanScreenModel(
                     quantity = amountValue!!,
                     paid = 0.0,
                     statusId = 1,
-                    creationDate = currentTime,
+                    creationDate = creationTime,
                     updateDate = currentTime
                 )
 
