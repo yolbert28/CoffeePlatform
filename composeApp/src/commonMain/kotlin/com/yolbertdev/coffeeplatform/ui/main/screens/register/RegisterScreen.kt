@@ -1,4 +1,4 @@
-package com.yolbertdev.coffeeplatform.ui.login
+package com.yolbertdev.coffeeplatform.ui.main.screens.register
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -24,30 +24,26 @@ import coffeeplatform.composeapp.generated.resources.decorator_bottom
 import coffeeplatform.composeapp.generated.resources.decorator_top
 import com.yolbertdev.coffeeplatform.ui.components.PrimaryButton
 import com.yolbertdev.coffeeplatform.ui.components.SecondaryTextFieldApp
-import com.yolbertdev.coffeeplatform.ui.main.MainScreen
-import com.yolbertdev.coffeeplatform.ui.main.screens.register.RegisterScreen
+import com.yolbertdev.coffeeplatform.ui.main.screens.register.RegisterScreenModel
 import org.jetbrains.compose.resources.painterResource
 
-class LoginScreen : Screen {
+class RegisterScreen : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-        val viewModel = getScreenModel<LoginScreenModel>()
+        val viewModel = getScreenModel<RegisterScreenModel>()
         val state by viewModel.state.collectAsState()
 
-        var rememberMe by remember { mutableStateOf(false) }
-
-        // Efecto para navegar al Home si el login es exitoso
-        LaunchedEffect(state.isLoggedIn) {
-            if (state.isLoggedIn) {
-                navigator.replaceAll(MainScreen())
+        LaunchedEffect(state.isSuccess) {
+            if (state.isSuccess) {
+                navigator.pop() // Volver al login tras registro exitoso
             }
         }
 
         Box(
             modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)
         ) {
-            // Fondo con los decoradores originales
+            // Fondo Decorativo (Igual que Login)
             Box(modifier = Modifier.fillMaxSize()) {
                 Image(
                     painter = painterResource(Res.drawable.decorator_top),
@@ -69,10 +65,10 @@ class LoginScreen : Screen {
                     .widthIn(max = 400.dp)
                     .fillMaxWidth()
                     .align(Alignment.Center)
-                    .verticalScroll(rememberScrollState()), // Scroll por seguridad en pantallas pequeñas
+                    .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Cabecera manteniendo el Row original pero más estético
+                // Cabecera (Igual que Login)
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -94,7 +90,7 @@ class LoginScreen : Screen {
                 Spacer(Modifier.height(12.dp))
 
                 Text(
-                    text = "Tu aplicación financiera de confianza ofreciendo los mejores créditos",
+                    text = "Crea una nueva cuenta para gestionar tus créditos",
                     style = MaterialTheme.typography.bodyMedium.copy(
                         fontWeight = FontWeight.SemiBold,
                         textAlign = TextAlign.Center,
@@ -105,44 +101,34 @@ class LoginScreen : Screen {
 
                 Spacer(Modifier.height(32.dp))
 
-                // Bloque de Formulario
+                // Bloque de Formulario de Registro
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    // Campo Usuario
+                    SecondaryTextFieldApp(
+                        value = state.name,
+                        onValueChange = { viewModel.onNameChange(it) },
+                        placeholder = { Text("Nombre Completo") }
+                    )
+
                     SecondaryTextFieldApp(
                         value = state.username,
                         onValueChange = { viewModel.onUsernameChange(it) },
-                        placeholder = { Text("Usuario o Correo") }
+                        placeholder = { Text("Usuario") }
                     )
 
-                    // Campo Contraseña
                     SecondaryTextFieldApp(
                         value = state.password,
                         onValueChange = { viewModel.onPasswordChange(it) },
                         placeholder = { Text("Contraseña") }
                     )
 
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Checkbox(
-                            checked = rememberMe,
-                            onCheckedChange = { rememberMe = it },
-                            colors = CheckboxDefaults.colors(
-                                checkedColor = MaterialTheme.colorScheme.primary,
-                                uncheckedColor = MaterialTheme.colorScheme.outlineVariant
-                            )
-                        )
-                        Text(
-                            text = "Recuérdame",
-                            style = MaterialTheme.typography.bodySmall.copy(
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        )
-                    }
+                    SecondaryTextFieldApp(
+                        value = state.confirmPassword,
+                        onValueChange = { viewModel.onConfirmChange(it) },
+                        placeholder = { Text("Confirmar Contraseña") }
+                    )
 
                     if (state.error != null) {
                         Text(
@@ -159,8 +145,8 @@ class LoginScreen : Screen {
                         }
                     } else {
                         PrimaryButton(
-                            text = "Iniciar Sesión",
-                            onClick = { viewModel.login() },
+                            text = "Registrarse",
+                            onClick = { viewModel.register() },
                             modifier = Modifier.fillMaxWidth().height(56.dp)
                         )
                     }
@@ -168,7 +154,7 @@ class LoginScreen : Screen {
 
                 Spacer(Modifier.height(32.dp))
 
-                // Footer decorativo y link
+                // Footer
                 Box(
                     Modifier
                         .height(1.dp)
@@ -178,16 +164,15 @@ class LoginScreen : Screen {
 
                 Spacer(Modifier.height(24.dp))
 
-                // Link de Registro (NUEVO, manteniendo estilo)
                 Row(
-                    modifier = Modifier.clickable { navigator.push(RegisterScreen()) }
+                    modifier = Modifier.clickable { navigator.pop() }
                 ) {
                     Text(
-                        text = "¿No tienes cuenta? ",
+                        text = "¿Ya tienes cuenta? ",
                         style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
                     )
                     Text(
-                        text = "Regístrate",
+                        text = "Inicia Sesión",
                         style = MaterialTheme.typography.bodySmall.copy(
                             color = MaterialTheme.colorScheme.primary,
                             fontWeight = FontWeight.Bold

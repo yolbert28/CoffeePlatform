@@ -17,12 +17,18 @@ import com.yolbertdev.coffeeplatform.data.database.dao.LoanDao
 import com.yolbertdev.coffeeplatform.data.database.dao.PaymentDao
 import com.yolbertdev.coffeeplatform.data.database.repository.LoanRepositoryImpl
 import com.yolbertdev.coffeeplatform.data.database.repository.PaymentRepositoryImpl
+import com.yolbertdev.coffeeplatform.data.database.repository.UserRepositoryImpl
 import com.yolbertdev.coffeeplatform.domain.repository.LoanRepository
 import com.yolbertdev.coffeeplatform.domain.repository.PaymentRepository
+import com.yolbertdev.coffeeplatform.domain.repository.UserRepository
 import com.yolbertdev.coffeeplatform.domain.usecase.InsertLoanUseCase
+import com.yolbertdev.coffeeplatform.domain.usecase.LoginUseCase
+import com.yolbertdev.coffeeplatform.domain.usecase.RegisterUseCase
+import com.yolbertdev.coffeeplatform.ui.login.LoginScreenModel
 import com.yolbertdev.coffeeplatform.ui.main.screens.customer.detail.CustomerDetailScreenModel
 import com.yolbertdev.coffeeplatform.ui.main.screens.loan.LoanScreenModel
 import com.yolbertdev.coffeeplatform.ui.main.screens.loan.add.AddLoanScreenModel
+import com.yolbertdev.coffeeplatform.ui.main.screens.register.RegisterScreenModel
 
 val commonModule = module {
     single<CoffeeDatabase> { CoffeeDatabase(get()) }
@@ -32,7 +38,7 @@ val commonModule = module {
     single<HomeScreenModel> { HomeScreenModel() }
     single<CustomerScreenModel>{CustomerScreenModel(get(), get())}
     single { InsertLoanUseCase(get()) }
-
+    single<UserRepository> { UserRepositoryImpl(get()) }
     factory<AddCustomerScreenModel>{ AddCustomerScreenModel(get())}
     factory { AddLoanScreenModel(get(), get()) }
     single<InsertCustomerUseCase>{InsertCustomerUseCase(get())}
@@ -40,6 +46,10 @@ val commonModule = module {
     singleOf(::CustomerRepositoryImpl) bind CustomerRepository::class
     singleOf(::LoanRepositoryImpl) bind LoanRepository::class
     singleOf(::PaymentRepositoryImpl) bind PaymentRepository::class
+    single { LoginUseCase(get()) }
+    single { RegisterUseCase(get()) }
     factory { CustomerDetailScreenModel(get()) }
     factory { LoanScreenModel(get()) }
+    factory { RegisterScreenModel(get()) }
+    factory { LoginScreenModel(get()) }
     factory { ReportViewModel(get(),get(),get()) }}

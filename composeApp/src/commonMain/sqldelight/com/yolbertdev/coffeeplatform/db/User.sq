@@ -1,0 +1,15 @@
+CREATE TABLE user (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT NOT NULL UNIQUE,
+    password TEXT NOT NULL,
+    name TEXT NOT NULL
+);
+
+login:
+SELECT * FROM user WHERE username = ? AND password = ?;
+
+insert:
+INSERT INTO user(username, password, name) VALUES (?, ?, ?);
+
+selectByUsername:
+SELECT * FROM user WHERE username = ?;
