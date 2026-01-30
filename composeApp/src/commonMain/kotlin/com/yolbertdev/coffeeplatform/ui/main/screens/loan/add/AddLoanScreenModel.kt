@@ -19,9 +19,8 @@ data class AddLoanUiState(
     val interestRate: String = "10",
     val description: String = "",
     val selectedCurrencyIndex: Int = 0,
-    val paymentDate: Long = DateMethods.getCurrentTimeMillis() + 2592000000L,
+    val paymentDate: Long = DateMethods.getCurrentTimeMillis(),
     val isLoading: Boolean = false,
-
     // Nuevos campos para validación y feedback
     val amountError: String? = null,
     val customerError: String? = null,
@@ -101,7 +100,7 @@ class AddLoanScreenModel(
             try {
                 val paymentTypeString = if (state.selectedCurrencyIndex == 0) "USD" else "QT"
                 val currentTime = DateMethods.getCurrentTimeMillis()
-                val paymentTime = currentTime + 2592000000L // +30 días
+                val paymentTime = state.paymentDate
 
                 val loan = Loan(
                     id = 0,

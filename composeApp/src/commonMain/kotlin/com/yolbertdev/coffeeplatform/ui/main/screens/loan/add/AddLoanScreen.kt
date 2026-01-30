@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Description
+import androidx.compose.material.icons.filled.Event
 import androidx.compose.material.icons.filled.Percent
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
@@ -54,8 +55,13 @@ class AddLoanScreen : Screen {
                 onDismissRequest = { showDatePicker = false },
                 confirmButton = {
                     TextButton(onClick = {
-                        datePickerState.selectedDateMillis?.let {
-                            viewModel.onPaymentDateChanged(it)
+                        // AQUÍ CAPTURAMOS LA FECHA SELECCIONADA
+                        datePickerState.selectedDateMillis?.let { date ->
+                            // Truco opcional: Sumar 12 horas (43200000ms) para evitar problemas de zona horaria
+                            // y que caiga al día anterior si estás en UTC-4.
+                            // O simplemente pasar 'date' tal cual si DateMethods maneja UTC.
+                            // Por ahora pasamos 'date' directo, asumiendo que solo quieres guardar el timestamp.
+                            viewModel.onPaymentDateChanged(date)
                         }
                         showDatePicker = false
                     }) {
@@ -146,7 +152,21 @@ class AddLoanScreen : Screen {
                         )
                     }
                 }
-
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    TextFieldApp(
+                        value = DateMethods.formatDate(state.paymentDate), // Muestra lo que hay en el State
+                        onValueChange = { },
+                        label = "Fecha de Vencimiento",
+                        readOnly = true,
+                        imageVector = Icons.Default.Event, // Icono de calendario
+                        trailingIcon = { Icon(Icons.Default.Event, null) }
+                    )
+                    Box(
+                        modifier = Modifier
+                            .matchParentSize()
+                            .clickable { showDatePicker = true } // Abre el calendario
+                    )
+                }
                 // 4. Interés
                 TextFieldApp(
                     value = state.interestRate,
