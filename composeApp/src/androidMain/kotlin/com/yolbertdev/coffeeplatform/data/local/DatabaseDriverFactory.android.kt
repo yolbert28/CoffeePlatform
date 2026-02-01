@@ -13,7 +13,7 @@ actual class DatabaseDriverFactory(private val context: Context) {
         return AndroidSqliteDriver(
             CoffeeDatabase.Schema,
             context,
-            name = "coffee_v2.db",
+            name = "coffee_v3.db",
             callback = object : AndroidSqliteDriver.Callback(CoffeeDatabase.Schema) {
                 override fun onOpen(db: SupportSQLiteDatabase) {
                     db.setForeignKeyConstraintsEnabled(true)

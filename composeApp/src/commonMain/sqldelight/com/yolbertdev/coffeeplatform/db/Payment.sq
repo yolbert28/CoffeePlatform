@@ -1,26 +1,43 @@
 CREATE TABLE payment (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    loan_id INTEGER NOT NULL,
     amount REAL NOT NULL,
-    payment_type_id INTEGER NOT NULL,
-    customer_id INTEGER NOT NULL,
-    creation_date INTEGER NOT NULL DEFAULT (strftime('%s', 'now')),
-    update_date INTEGER NOT NULL DEFAULT (strftime('%s', 'now')),
-    FOREIGN KEY (customer_id) REFERENCES customer(id),
-    FOREIGN KEY (payment_type_id) REFERENCES payment_type(id)
+    payment_date INTEGER NOT NULL,
+    note TEXT,
+    FOREIGN KEY (loan_id) REFERENCES loan(id)
 );
 
+-- Usamos parámetros con nombre (:loanId) para que Kotlin genere 'loanId' en lugar de 'loan_id'
+insert:
+INSERT INTO payment(loan_id, amount, payment_date, note)
+VALUES (:loanId, :amount, :paymentDate, :note);
+
+selectByLoanId:
+SELECT * FROM payment WHERE loan_id = :loanId;
+
+-- CORRECCIÓN 1: Restauramos los JOINs para obtener 'clientName' y 'currencyName'
 selectPaymentsForReport:
 SELECT
     customer.name AS clientName,
-    payment.creation_date,
+    payment.payment_date,
     payment.amount,
     payment_type.name AS currencyName
 FROM payment
-INNER JOIN customer ON payment.customer_id = customer.id
-INNER JOIN payment_type ON payment.payment_type_id = payment_type.id;
+INNER JOIN loan ON payment.loan_id = loan.id
+INNER JOIN customer ON loan.customer_id = customer.id
+INNER JOIN payment_type ON loan.payment_type_id = payment_type.id;
 
-insert:
-INSERT INTO payment(amount, payment_type_id, customer_id)
-VALUES (?, ?, ?);
+-- CORRECCIÓN 2: Seleccionamos explícitamente los campos de 'loan' que tu repositorio necesita
 selectByCustomerId:
-SELECT * FROM payment WHERE customer_id = ?;
+SELECT
+    payment.id,
+    payment.amount,
+    payment.payment_date,
+    payment.note,
+    payment.loan_id,
+    loan.payment_type_id, -- Necesario para tu Mapper en el Repo
+    loan.customer_id,     -- Necesario para tu Mapper en el Repo
+    loan.update_date      -- Necesario para tu Mapper en el Repo
+FROM payment
+INNER JOIN loan ON payment.loan_id = loan.id
+WHERE loan.customer_id = :customerId;

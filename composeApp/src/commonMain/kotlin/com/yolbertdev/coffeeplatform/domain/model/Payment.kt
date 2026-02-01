@@ -4,7 +4,9 @@ data class Payment(
     val id: Long,
     val amount: Double,
     val paymentType: String, // String ("USD" o "QT")
-    val customerId: Long,
+    val customerId: Int,
     val creationDate: Long,
-    val updateDate: Long
+    val updateDate: Long,
+    val note: String?,
+    val loanId: Int
 )

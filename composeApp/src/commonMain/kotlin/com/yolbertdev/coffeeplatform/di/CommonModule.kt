@@ -21,6 +21,7 @@ import com.yolbertdev.coffeeplatform.data.database.repository.UserRepositoryImpl
 import com.yolbertdev.coffeeplatform.domain.repository.LoanRepository
 import com.yolbertdev.coffeeplatform.domain.repository.PaymentRepository
 import com.yolbertdev.coffeeplatform.domain.repository.UserRepository
+import com.yolbertdev.coffeeplatform.domain.usecase.CreatePaymentUseCase
 import com.yolbertdev.coffeeplatform.domain.usecase.InsertLoanUseCase
 import com.yolbertdev.coffeeplatform.domain.usecase.LoginUseCase
 import com.yolbertdev.coffeeplatform.domain.usecase.RegisterUseCase
@@ -28,6 +29,8 @@ import com.yolbertdev.coffeeplatform.ui.login.LoginScreenModel
 import com.yolbertdev.coffeeplatform.ui.main.screens.customer.detail.CustomerDetailScreenModel
 import com.yolbertdev.coffeeplatform.ui.main.screens.loan.LoanScreenModel
 import com.yolbertdev.coffeeplatform.ui.main.screens.loan.add.AddLoanScreenModel
+import com.yolbertdev.coffeeplatform.ui.main.screens.payment.PaymentScreenModel
+import com.yolbertdev.coffeeplatform.ui.main.screens.payment.add.AddPaymentScreenModel
 import com.yolbertdev.coffeeplatform.ui.main.screens.register.RegisterScreenModel
 
 val commonModule = module {
@@ -38,6 +41,7 @@ val commonModule = module {
     single<HomeScreenModel> { HomeScreenModel(get()) }
     single<CustomerScreenModel>{CustomerScreenModel(get(), get())}
     single { InsertLoanUseCase(get()) }
+    single { CreatePaymentUseCase(get()) }
     single<UserRepository> { UserRepositoryImpl(get()) }
     factory<AddCustomerScreenModel>{ AddCustomerScreenModel(get())}
     factory { AddLoanScreenModel(get(), get()) }
@@ -50,7 +54,9 @@ val commonModule = module {
     single { RegisterUseCase(get()) }
     factory { CustomerDetailScreenModel(get()) }
     factory { LoanScreenModel(get()) }
+    factory { AddPaymentScreenModel(get()) }
     factory { HomeScreenModel(get()) }
     factory { RegisterScreenModel(get()) }
     factory { LoginScreenModel(get()) }
+    factory { PaymentScreenModel(get()) }
     factory { ReportViewModel(get(),get(),get()) }}

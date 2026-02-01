@@ -1,31 +1,30 @@
 package com.yolbertdev.coffeeplatform.data.database.dao
 
 import com.yolbertdev.coffeeplatform.db.CoffeeDatabase
-import com.yolbertdev.coffeeplatform.db.PaymentQueries
 
 class PaymentDao(
     private val database: CoffeeDatabase
 ) {
     private val queries = database.paymentQueries
+
     fun getPaymentsByCustomer(customerId: Long) =
         queries.selectByCustomerId(customerId).executeAsList()
 
-    // 2. Reportes
+    // Esta función devolverá ahora una lista más simple
     fun getPaymentsForReport() =
         queries.selectPaymentsForReport().executeAsList()
 
-    // 3. Insertar Pago
     fun insert(
+        loanId: Long,
         amount: Double,
-        payment_type_id: Long,
-        customer_id: Long
+        paymentDate: Long,
+        note: String?
     ) {
         queries.insert(
+            loanId = loanId,
             amount = amount,
-            payment_type_id = payment_type_id,
-            customer_id = customer_id
+            paymentDate = paymentDate,
+            note = note
         )
     }
 }
-
-
