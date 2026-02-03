@@ -7,5 +7,6 @@ interface CustomerRepository {
     suspend fun insert(customer: Customer)
 
     suspend fun selectAll(): List<Customer>
+    suspend fun updateCustomer(customer: Customer)
 
 }

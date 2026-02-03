@@ -25,8 +25,10 @@ import com.yolbertdev.coffeeplatform.domain.usecase.CreatePaymentUseCase
 import com.yolbertdev.coffeeplatform.domain.usecase.InsertLoanUseCase
 import com.yolbertdev.coffeeplatform.domain.usecase.LoginUseCase
 import com.yolbertdev.coffeeplatform.domain.usecase.RegisterUseCase
+import com.yolbertdev.coffeeplatform.domain.usecase.UpdateCustomerUseCase
 import com.yolbertdev.coffeeplatform.ui.login.LoginScreenModel
 import com.yolbertdev.coffeeplatform.ui.main.screens.customer.detail.CustomerDetailScreenModel
+import com.yolbertdev.coffeeplatform.ui.main.screens.customer.edit.EditCustomerScreenModel
 import com.yolbertdev.coffeeplatform.ui.main.screens.loan.LoanScreenModel
 import com.yolbertdev.coffeeplatform.ui.main.screens.loan.add.AddLoanScreenModel
 import com.yolbertdev.coffeeplatform.ui.main.screens.payment.PaymentScreenModel
@@ -52,6 +54,8 @@ val commonModule = module {
     singleOf(::PaymentRepositoryImpl) bind PaymentRepository::class
     single { LoginUseCase(get()) }
     single { RegisterUseCase(get()) }
+    single { UpdateCustomerUseCase(get()) } // Agregar UseCase
+    factory { EditCustomerScreenModel(get()) }
     factory { CustomerDetailScreenModel(get()) }
     factory { LoanScreenModel(get()) }
     factory { AddPaymentScreenModel(get()) }
