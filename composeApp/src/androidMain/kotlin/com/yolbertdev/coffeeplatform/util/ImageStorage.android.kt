@@ -7,39 +7,21 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
+import java.util.UUID
 
-actual object ImageStorage {
-    lateinit var appContext: Context
+actual class ImageStorage(private val context: Context) {
+    actual suspend fun saveImage(bytes: ByteArray): String? = withContext(Dispatchers.IO) {
+        try {
+            val fileName = "img_${UUID.randomUUID()}.jpg"
+            val file = File(context.filesDir, fileName)
 
-    actual suspend fun saveImage(bitmap: coil3.Bitmap, fileName: String): String? {
-        val androidBitmap = bitmap
-        val file = File(appContext.filesDir, "$fileName.webp")
-
-        print("imageeeeeeee")
-
-        return try {
-            print("start")
-            FileOutputStream(file).use { out ->
-                val format = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-
-                    print("here")
-                    Bitmap.CompressFormat.WEBP_LOSSY
-                } else {
-                    @Suppress("DEPRECATION")
-                    print("here 2")
-                    Bitmap.CompressFormat.WEBP
-                }
-
-
-                print("ending")
-                androidBitmap.compress(format, 80, out)
+            FileOutputStream(file).use { stream ->
+                stream.write(bytes)
             }
-            val img = file.absolutePath
-            print("imageeeeeeee: $img")
-            img
+            file.absolutePath
         } catch (e: Exception) {
             e.printStackTrace()
-            "nadaaaa"
+            null
         }
     }
 }

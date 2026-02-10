@@ -32,6 +32,7 @@ import com.yolbertdev.coffeeplatform.ui.components.ListItemFormatRow
 import com.yolbertdev.coffeeplatform.ui.components.LoanItem
 import com.yolbertdev.coffeeplatform.ui.components.PaymentItem
 import com.yolbertdev.coffeeplatform.ui.components.SearchBarApp
+import com.yolbertdev.coffeeplatform.ui.main.screens.customer.edit.EditCustomerScreen
 import com.yolbertdev.coffeeplatform.ui.theme.Gray200
 import java.io.File
 
@@ -116,7 +117,7 @@ data class CustomerDetailScreen(val customer: Customer) : Screen {
                     Spacer(Modifier.height(16.dp))
 
                     OutlinedButton(
-                        onClick = { /* TODO: Navegar a pantalla de edición */ },
+                        onClick = { navigator.push(EditCustomerScreen(customer))},
                         shape = RoundedCornerShape(10.dp),
                         modifier = Modifier.fillMaxWidth(0.6f),
                         colors = ButtonDefaults.outlinedButtonColors(

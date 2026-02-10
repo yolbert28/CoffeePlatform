@@ -31,7 +31,7 @@ import com.yolbertdev.coffeeplatform.ui.components.SecondaryTextFieldApp
 import com.yolbertdev.coffeeplatform.ui.theme.Gray200
 
 @Composable
-expect fun rememberCameraLauncher(onResult: (Bitmap?) -> Unit): () -> Unit
+expect fun rememberGalleryLauncher(onResult: (ByteArray?) -> Unit): () -> Unit
 
 class AddCustomerScreen() : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -42,7 +42,11 @@ class AddCustomerScreen() : Screen {
 
         val screenModel = getScreenModel<AddCustomerScreenModel>()
 
-        val launchCamera = rememberCameraLauncher { screenModel.onPhotoCaptured(it) }
+        val launchGallery = rememberGalleryLauncher { bytes ->
+            if (bytes != null) {
+                screenModel.onPhotoCaptured(bytes)
+            }
+        }
 
         val uiState by screenModel.uiState.collectAsState()
 
@@ -88,12 +92,12 @@ class AddCustomerScreen() : Screen {
                                     MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
                                     CircleShape
                                 )
-                                .clickable { launchCamera() },
+                                .clickable { launchGallery() },
                             contentAlignment = Alignment.Center
                         ) {
-                            if (uiState.capturedBitmap != null) {
+                            if (uiState.photoBytes != null) {
                                 AsyncImage(
-                                    model = uiState.capturedBitmap,
+                                    model = uiState.photoBytes,
                                     contentDescription = null,
                                     modifier = Modifier.fillMaxSize(),
                                     contentScale = ContentScale.Crop
@@ -118,7 +122,7 @@ class AddCustomerScreen() : Screen {
                         ) {
                             Box(
                                 contentAlignment = Alignment.Center,
-                                modifier = Modifier.clickable { launchCamera() }) {
+                                modifier = Modifier.clickable { launchGallery() }) {
                                 Icon(Icons.Default.AddAPhoto, null, modifier = Modifier.size(20.dp))
                             }
                         }

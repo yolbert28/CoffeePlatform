@@ -20,3 +20,12 @@ insert:
 INSERT INTO customer(id_card, name, nickname, description, credit_level, location, photo, status_id)
 VALUES (:id_card, :name, :nickname, :description, :credit_level, :location, :photo, :status_id);
 
+update:
+UPDATE customer
+SET name = :name,
+    nickname = :nickname,
+    description = :description,
+    location = :location,
+    photo = :photo,
+    update_date = :updateDate
+WHERE id = :id;

@@ -29,8 +29,11 @@ import com.yolbertdev.coffeeplatform.ui.main.screens.customer.detail.CustomerDet
 import com.yolbertdev.coffeeplatform.ui.main.screens.loan.LoanScreenModel
 import com.yolbertdev.coffeeplatform.ui.main.screens.loan.add.AddLoanScreenModel
 import com.yolbertdev.coffeeplatform.ui.main.screens.register.RegisterScreenModel
-
+import com.yolbertdev.coffeeplatform.util.ImageStorage
+import com.yolbertdev.coffeeplatform.domain.usecase.UpdateCustomerUseCase
+import com.yolbertdev.coffeeplatform.ui.main.screens.customer.edit.EditCustomerScreenModel
 val commonModule = module {
+
     single<CoffeeDatabase> { CoffeeDatabase(get()) }
     single<CustomerDao> { CustomerDao(get()) }
     single<LoanDao> { LoanDao(get()) }
@@ -39,7 +42,7 @@ val commonModule = module {
     single<CustomerScreenModel>{CustomerScreenModel(get(), get())}
     single { InsertLoanUseCase(get()) }
     single<UserRepository> { UserRepositoryImpl(get()) }
-    factory<AddCustomerScreenModel>{ AddCustomerScreenModel(get())}
+    factory<AddCustomerScreenModel>{ AddCustomerScreenModel(get(), get())}
     factory { AddLoanScreenModel(get(), get()) }
     single<InsertCustomerUseCase>{InsertCustomerUseCase(get())}
     single<SelectAllCustomerUseCase>{SelectAllCustomerUseCase(get())}
@@ -48,9 +51,11 @@ val commonModule = module {
     singleOf(::PaymentRepositoryImpl) bind PaymentRepository::class
     single { LoginUseCase(get()) }
     single { RegisterUseCase(get()) }
+    single { UpdateCustomerUseCase(get()) }
     factory { CustomerDetailScreenModel(get()) }
     factory { LoanScreenModel(get()) }
     factory { HomeScreenModel(get()) }
     factory { RegisterScreenModel(get()) }
     factory { LoginScreenModel(get()) }
+    factory { EditCustomerScreenModel(get(), get()) }
     factory { ReportViewModel(get(),get(),get()) }}

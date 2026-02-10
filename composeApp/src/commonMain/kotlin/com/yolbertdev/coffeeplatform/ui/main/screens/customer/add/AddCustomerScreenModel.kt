@@ -15,14 +15,15 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class AddCustomerScreenModel(
-    private val insertCustomerUseCase: InsertCustomerUseCase
+    private val insertCustomerUseCase: InsertCustomerUseCase,
+    private val imageStorage: ImageStorage
 ) : ScreenModel {
 
     private val _uiState = MutableStateFlow(AddCustomerUiState())
     val uiState = _uiState.asStateFlow()
 
-    fun onPhotoCaptured(bitmap: Bitmap?) {
-        _uiState.update { it.copy(capturedBitmap = bitmap) }
+    fun onPhotoCaptured(bytes: ByteArray) {
+        _uiState.update { it.copy(photoBytes = bytes) }
     }
 
     fun onChangeName(name: String) {
@@ -73,10 +74,9 @@ class AddCustomerScreenModel(
             withContext(Dispatchers.IO) {
                 try {
                     // 1. Si hay un bitmap capturado, lo guardamos físicamente primero
-                    val photoPath = currentState.capturedBitmap?.let { bitmap ->
-                        val fileName = "customer_${DateMethods.getCurrentTimeMillis()}"
-                        ImageStorage.saveImage(bitmap, fileName)
-                    } ?: "nothing"
+                    val photoPath = currentState.photoBytes?.let { bytes ->
+                        imageStorage.saveImage(bytes)
+                    } ?: ""
 
                     // Debug para verificar en consola (usa println para ver el salto de línea)
                     println("DEBUG: Photo saved at -> $photoPath")
@@ -108,10 +108,36 @@ class AddCustomerScreenModel(
 
 
 data class AddCustomerUiState(
-    val capturedBitmap: Bitmap? = null,
+    val photoBytes: ByteArray? = null,
     val name: String = "",
     val nickname: String = "",
     val idCard: String = "",
     val location: String = "",
     val description: String = ""
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as AddCustomerUiState
+
+        if (!photoBytes.contentEquals(other.photoBytes)) return false
+        if (name != other.name) return false
+        if (nickname != other.nickname) return false
+        if (idCard != other.idCard) return false
+        if (location != other.location) return false
+        if (description != other.description) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = photoBytes?.contentHashCode() ?: 0
+        result = 31 * result + name.hashCode()
+        result = 31 * result + nickname.hashCode()
+        result = 31 * result + idCard.hashCode()
+        result = 31 * result + location.hashCode()
+        result = 31 * result + description.hashCode()
+        return result
+    }
+}

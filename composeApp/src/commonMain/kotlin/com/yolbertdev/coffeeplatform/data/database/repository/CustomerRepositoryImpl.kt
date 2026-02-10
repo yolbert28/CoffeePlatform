@@ -22,5 +22,8 @@ class CustomerRepositoryImpl(
             CustomerMapper.toDomain(it)
         }
     }
-
+    override suspend fun update(customer: Customer) = withContext(Dispatchers.IO) {
+        val customerDb: CustomerDb = CustomerMapper.toDb(customer)
+        customerDao.update(customerDb)
+    }
 }

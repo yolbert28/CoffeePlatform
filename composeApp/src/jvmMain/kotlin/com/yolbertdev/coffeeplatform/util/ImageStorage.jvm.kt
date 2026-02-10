@@ -3,20 +3,19 @@ package com.yolbertdev.coffeeplatform.util
 import org.jetbrains.skia.EncodedImageFormat
 import org.jetbrains.skia.Image
 import java.io.File
+import java.util.UUID
 
-actual object ImageStorage {
-    actual suspend fun saveImage(bitmap: coil3.Bitmap, fileName: String): String? {
-        val skiaBitmap = bitmap // Coil 3 Bitmap es org.jetbrains.skia.Bitmap en Desktop
-        val image = Image.makeFromBitmap(skiaBitmap)
-        val data = image.encodeToData(EncodedImageFormat.JPEG, 80) ?: return null
-
-        val file = File(System.getProperty("user.home"), ".coffeeplatform/images/$fileName.jpg")
+actual class ImageStorage {
+    actual suspend fun saveImage(bytes: ByteArray): String? {
+        val fileName = "img_${UUID.randomUUID()}.jpg"
+        val file = File(System.getProperty("user.home"), ".coffeeplatform/images/$fileName")
         file.parentFile.mkdirs()
 
         return try {
-            file.writeBytes(data.bytes)
+            file.writeBytes(bytes)
             file.absolutePath
         } catch (e: Exception) {
+            e.printStackTrace()
             null
         }
     }

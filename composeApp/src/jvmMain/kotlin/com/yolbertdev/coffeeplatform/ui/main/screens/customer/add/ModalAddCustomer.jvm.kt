@@ -1,26 +1,29 @@
 package com.yolbertdev.coffeeplatform.ui.main.screens.customer.add
 
 import androidx.compose.runtime.Composable
-import coil3.Bitmap
-import org.jetbrains.skia.Image
-import org.jetbrains.skia.Bitmap as SkiaBitmap
-import java.awt.FileDialog
-import java.awt.Frame
 import java.io.File
+import javax.swing.JFileChooser
+import javax.swing.filechooser.FileNameExtensionFilter
 
 @Composable
-actual fun rememberCameraLauncher(onResult: (Bitmap?) -> Unit): () -> Unit {
+actual fun rememberGalleryLauncher(onResult: (ByteArray?) -> Unit): () -> Unit {
     return {
-        val dialog = FileDialog(null as Frame?, "Seleccionar Foto", FileDialog.LOAD)
-        dialog.isVisible = true
-        if (dialog.file != null) {
-            val file = File(dialog.directory, dialog.file)
-            val bytes = file.readBytes()
+        // Implementación simple usando Swing para Desktop
+        val fileChooser = JFileChooser()
+        fileChooser.dialogTitle = "Seleccionar Imagen"
+        fileChooser.fileFilter = FileNameExtensionFilter("Imágenes", "jpg", "png", "jpeg")
 
-            // CONVERSIÓN CORRECTA PARA SKIA
-            val skiaImage = Image.makeFromEncoded(bytes)
-            val bitmap = SkiaBitmap.makeFromImage(skiaImage) // Convertimos Image a Bitmap
-            onResult(bitmap)
+        val result = fileChooser.showOpenDialog(null)
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            val file = fileChooser.selectedFile
+            try {
+                val bytes = file.readBytes()
+                onResult(bytes)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                onResult(null)
+            }
         }
     }
 }
