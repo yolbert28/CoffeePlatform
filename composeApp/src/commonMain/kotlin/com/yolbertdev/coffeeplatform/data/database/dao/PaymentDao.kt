@@ -7,25 +7,28 @@ class PaymentDao(
     private val database: CoffeeDatabase
 ) {
     private val queries = database.paymentQueries
-    fun getPaymentsByCustomer(customerId: Long) =
-        queries.selectByCustomerId(customerId).executeAsList()
 
-    // 2. Reportes
+    // Inserta un pago vinculado a un préstamo
+    fun insert(
+        loanId: Long,
+        amount: Double,
+        paymentDate: Long,
+        note: String?
+    ) {
+        queries.insert(
+            loanId = loanId,
+            amount = amount,
+            paymentDate = paymentDate,
+            note = note
+        )
+    }
+
+    // Obtiene pagos para el reporte general (con nombres)
     fun getPaymentsForReport() =
         queries.selectPaymentsForReport().executeAsList()
 
-    // 3. Insertar Pago
-    fun insert(
-        amount: Double,
-        payment_type_id: Long,
-        customer_id: Long
-    ) {
-        queries.insert(
-            amount = amount,
-            payment_type_id = payment_type_id,
-            customer_id = customer_id
-        )
-    }
+    // Obtiene pagos de un cliente específico
+    fun getPaymentsByCustomer(customerId: Long) =
+        queries.selectByCustomerId(customerId).executeAsList()
 }
-
 

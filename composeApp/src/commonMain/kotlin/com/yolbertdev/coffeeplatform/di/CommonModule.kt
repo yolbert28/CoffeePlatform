@@ -32,6 +32,9 @@ import com.yolbertdev.coffeeplatform.ui.main.screens.register.RegisterScreenMode
 import com.yolbertdev.coffeeplatform.util.ImageStorage
 import com.yolbertdev.coffeeplatform.domain.usecase.UpdateCustomerUseCase
 import com.yolbertdev.coffeeplatform.ui.main.screens.customer.edit.EditCustomerScreenModel
+import com.yolbertdev.coffeeplatform.domain.usecase.CreatePaymentUseCase
+import com.yolbertdev.coffeeplatform.ui.main.screens.payment.PaymentScreenModel
+import com.yolbertdev.coffeeplatform.ui.main.screens.payment.add.AddPaymentScreenModel
 val commonModule = module {
 
     single<CoffeeDatabase> { CoffeeDatabase(get()) }
@@ -41,9 +44,12 @@ val commonModule = module {
     single<HomeScreenModel> { HomeScreenModel(get()) }
     single<CustomerScreenModel>{CustomerScreenModel(get(), get())}
     single { InsertLoanUseCase(get()) }
+    single { CreatePaymentUseCase(get()) }
     single<UserRepository> { UserRepositoryImpl(get()) }
     factory<AddCustomerScreenModel>{ AddCustomerScreenModel(get(), get())}
     factory { AddLoanScreenModel(get(), get()) }
+    factory { PaymentScreenModel(get()) }
+    factory { AddPaymentScreenModel(get()) }
     single<InsertCustomerUseCase>{InsertCustomerUseCase(get())}
     single<SelectAllCustomerUseCase>{SelectAllCustomerUseCase(get())}
     singleOf(::CustomerRepositoryImpl) bind CustomerRepository::class

@@ -15,8 +15,8 @@ INSERT INTO loan (customer_id, interest_rate, payment_type_id, amount, payment_d
 VALUES (?,?,?,?,?,?,?,?);
 
 insertPayment:
-INSERT INTO payment (amount, payment_type_id, customer_id)
-VALUES (?,?,?);
+INSERT INTO payment (loan_id, amount, payment_date, note)
+VALUES (:loanId, :amount, :paymentDate, :note);
 
 -- insertCustomer:
 -- INSERT INTO customer (id_card,name, nickname, description,credit_level,location,photo)

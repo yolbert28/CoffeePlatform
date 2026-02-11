@@ -1,26 +1,42 @@
 CREATE TABLE payment (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    loan_id INTEGER NOT NULL,
     amount REAL NOT NULL,
-    payment_type_id INTEGER NOT NULL,
-    customer_id INTEGER NOT NULL,
+    payment_date INTEGER NOT NULL,
+    note TEXT,
     creation_date INTEGER NOT NULL DEFAULT (strftime('%s', 'now')),
     update_date INTEGER NOT NULL DEFAULT (strftime('%s', 'now')),
-    FOREIGN KEY (customer_id) REFERENCES customer(id),
-    FOREIGN KEY (payment_type_id) REFERENCES payment_type(id)
+    FOREIGN KEY (loan_id) REFERENCES loan(id)
 );
 
+-- Consulta para Insertar (Usamos loan_id)
+insert:
+INSERT INTO payment(loan_id, amount, payment_date, note)
+VALUES (:loanId, :amount, :paymentDate, :note);
+
+-- Consulta para Reportes (Hacemos JOIN con Loan -> Customer -> PaymentType)
 selectPaymentsForReport:
 SELECT
     customer.name AS clientName,
-    payment.creation_date,
+    payment.payment_date,
     payment.amount,
     payment_type.name AS currencyName
 FROM payment
-INNER JOIN customer ON payment.customer_id = customer.id
-INNER JOIN payment_type ON payment.payment_type_id = payment_type.id;
+INNER JOIN loan ON payment.loan_id = loan.id
+INNER JOIN customer ON loan.customer_id = customer.id
+INNER JOIN payment_type ON loan.payment_type_id = payment_type.id;
 
-insert:
-INSERT INTO payment(amount, payment_type_id, customer_id)
-VALUES (?, ?, ?);
+-- Consulta por Cliente (Trae los pagos de todos los préstamos de ese cliente)
 selectByCustomerId:
-SELECT * FROM payment WHERE customer_id = ?;
+SELECT
+    payment.id,
+    payment.amount,
+    payment.payment_date,
+    payment.note,
+    payment.loan_id,
+    loan.payment_type_id,
+    loan.customer_id,
+    loan.update_date
+FROM payment
+INNER JOIN loan ON payment.loan_id = loan.id
+WHERE loan.customer_id = :customerId;

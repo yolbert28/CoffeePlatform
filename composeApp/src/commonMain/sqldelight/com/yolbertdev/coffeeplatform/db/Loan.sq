@@ -49,3 +49,19 @@ SELECT
     loan.*,
     customer.* FROM loan
 INNER JOIN customer ON loan.customer_id = customer.id;
+updatePaymentProgress:
+UPDATE loan
+SET paid = :paidAmount,
+    status_id = :statusId,
+    update_date = :updateDate
+WHERE id = :id;
+
+selectPendingLoans:
+SELECT
+    loan.*,
+    customer.name AS customerName,
+    payment_type.name AS currencyName
+FROM loan
+INNER JOIN customer ON loan.customer_id = customer.id
+INNER JOIN payment_type ON loan.payment_type_id = payment_type.id
+WHERE loan.status_id = 1; -- 1 = Pendiente
