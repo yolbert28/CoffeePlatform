@@ -4,8 +4,9 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.yolbertdev.coffeeplatform.domain.model.Customer
 import com.yolbertdev.coffeeplatform.domain.model.Loan
+import com.yolbertdev.coffeeplatform.domain.model.Payment
 import com.yolbertdev.coffeeplatform.domain.repository.LoanRepository
-// import com.yolbertdev.coffeeplatform.domain.repository.PaymentRepository // Descomenta cuando tengas PaymentRepository listo
+import com.yolbertdev.coffeeplatform.domain.repository.PaymentRepository // Descomenta cuando tengas PaymentRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -14,12 +15,12 @@ import kotlinx.coroutines.launch
 data class CustomerDetailUiState(
     val isLoading: Boolean = false,
     val loans: List<Loan> = emptyList(),
-    // val payments: List<Payment> = emptyList() // TODO: Agregar modelo Payment
+    val payments: List<Payment> = emptyList(),
 )
 
 class CustomerDetailScreenModel(
     private val loanRepository: LoanRepository,
-    // private val paymentRepository: PaymentRepository
+    private val paymentRepository: PaymentRepository
 ) : ScreenModel {
 
     private val _uiState = MutableStateFlow(CustomerDetailUiState())
@@ -30,13 +31,13 @@ class CustomerDetailScreenModel(
             _uiState.update { it.copy(isLoading = true) }
             try {
                 val loans = loanRepository.getLoansByCustomerId(customerId)
-                // val payments = paymentRepository.getPaymentsByCustomerId(customerId)
+                val payments = paymentRepository.getPaymentsByCustomerId(customerId)
 
                 _uiState.update {
                     it.copy(
                         isLoading = false,
                         loans = loans,
-                        // payments = payments
+                        payments = payments
                     )
                 }
             } catch (e: Exception) {

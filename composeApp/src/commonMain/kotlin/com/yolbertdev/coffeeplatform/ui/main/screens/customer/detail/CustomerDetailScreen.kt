@@ -30,10 +30,12 @@ import coil3.compose.AsyncImage
 import com.yolbertdev.coffeeplatform.domain.model.Customer
 import com.yolbertdev.coffeeplatform.ui.components.ListItemFormatRow
 import com.yolbertdev.coffeeplatform.ui.components.LoanItem
+import com.yolbertdev.coffeeplatform.ui.components.MainPaymentItem
 import com.yolbertdev.coffeeplatform.ui.components.PaymentItem
 import com.yolbertdev.coffeeplatform.ui.components.SearchBarApp
 import com.yolbertdev.coffeeplatform.ui.main.screens.customer.edit.EditCustomerScreen
 import com.yolbertdev.coffeeplatform.ui.theme.Gray200
+import com.yolbertdev.coffeeplatform.util.DateMethods
 import java.io.File
 
 enum class CustomerDetailSection(val title: String, val icon: ImageVector) {
@@ -202,13 +204,38 @@ data class CustomerDetailScreen(val customer: Customer) : Screen {
                             CustomerDetailSection.PAYMENTS -> {
                                 // Aquí iría la lógica similar para pagos cuando tengas el repositorio
                                 item {
-                                    Text("Funcionalidad de Pagos en construcción")
+                                    Text("Historial de pagos", style = MaterialTheme.typography.titleMedium,
+                                        fontWeight = FontWeight.Bold,
+                                        modifier = Modifier.padding(top = 8.dp))
                                 }
-                                /*
-                                items(state.payments) { payment ->
-                                    PaymentItem(...)
+                                if (state.isLoading) {
+                                    item {
+                                        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                                            CircularProgressIndicator()
+                                        }
+                                    }
+                                } else if (state.payments.isEmpty()) {
+                                    item {
+                                        Text(
+                                            "No hay pagos registrados para este cliente.",
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            color = MaterialTheme.colorScheme.outline,
+                                            modifier = Modifier.padding(vertical = 8.dp)
+                                        )
+                                    }
+                                } else {
+                                    // Lista de Pagos
+                                    items(state.payments) { payment ->
+                                        MainPaymentItem(
+                                            customerNickname = "", // No necesario en detalle
+                                            customerName = "Pago realizado", // Título genérico o nota
+                                            customerPhoto = "", // No mostramos foto repetida
+                                            amount = "${payment.amount} ${payment.paymentType}",
+                                            date = DateMethods.formatDate(payment.creationDate),
+                                            onClick = { /* Opcional: ver detalle del pago */ }
+                                        )
+                                    }
                                 }
-                                */
                             }
                         }
                     }

@@ -58,7 +58,7 @@ val commonModule = module {
     single { LoginUseCase(get()) }
     single { RegisterUseCase(get()) }
     single { UpdateCustomerUseCase(get()) }
-    factory { CustomerDetailScreenModel(get()) }
+    factory { CustomerDetailScreenModel(get(), get()) }
     factory { LoanScreenModel(get()) }
     factory { HomeScreenModel(get()) }
     factory { RegisterScreenModel(get()) }
