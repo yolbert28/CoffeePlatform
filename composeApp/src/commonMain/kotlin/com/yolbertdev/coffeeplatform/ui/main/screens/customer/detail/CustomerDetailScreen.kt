@@ -34,6 +34,7 @@ import com.yolbertdev.coffeeplatform.ui.components.MainPaymentItem
 import com.yolbertdev.coffeeplatform.ui.components.PaymentItem
 import com.yolbertdev.coffeeplatform.ui.components.SearchBarApp
 import com.yolbertdev.coffeeplatform.ui.main.screens.customer.edit.EditCustomerScreen
+import com.yolbertdev.coffeeplatform.ui.main.screens.loan.detail.LoanDetailScreen
 import com.yolbertdev.coffeeplatform.ui.theme.Gray200
 import com.yolbertdev.coffeeplatform.util.DateMethods
 import java.io.File
@@ -195,7 +196,7 @@ data class CustomerDetailScreen(val customer: Customer) : Screen {
                                     }
                                 } else {
                                     items(state.loans) { loan ->
-                                        LoanItem(loan = loan, onClick = { /* TODO: Ir a detalle préstamo */ })
+                                        LoanItem(loan = loan, onClick = { }, customerName = customer.name)
                                         Spacer(Modifier.height(8.dp))
                                     }
                                 }

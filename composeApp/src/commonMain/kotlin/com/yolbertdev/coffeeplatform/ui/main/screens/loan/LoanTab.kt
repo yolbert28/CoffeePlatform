@@ -97,7 +97,7 @@ object LoanTab : Tab {
                                 LoanItem(loan = loan, onClick = {
                                     // Ahora tenemos tanto el Préstamo como el Cliente real para pasar al detalle
                                     navigator.parent?.push(LoanDetailScreen(loan, customer))
-                                })
+                                }, customerName= customer.name, )
                             }
                         }
                     }

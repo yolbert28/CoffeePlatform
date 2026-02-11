@@ -25,10 +25,9 @@ import coil3.compose.AsyncImage
 import com.yolbertdev.coffeeplatform.domain.model.Customer
 import com.yolbertdev.coffeeplatform.domain.model.Loan
 import com.yolbertdev.coffeeplatform.ui.components.DetailRow
-import com.yolbertdev.coffeeplatform.ui.components.StatusBadge
+// StatusBadge ya no es necesario importarlo porque lo haremos dinámico aquí
 import com.yolbertdev.coffeeplatform.ui.main.screens.customer.detail.CustomerDetailScreen
 import com.yolbertdev.coffeeplatform.ui.theme.Gray200
-// 1. IMPORTAR ESTO
 import com.yolbertdev.coffeeplatform.util.DateMethods
 import java.io.File
 
@@ -38,6 +37,12 @@ data class LoanDetailScreen(val loan: Loan, val customer: Customer) : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
+
+        // Lógica de Estado y Progreso
+        val isPaid = loan.statusId == 2
+        val progress = if (loan.quantity > 0) (loan.paid / loan.quantity).toFloat() else 0f
+        val statusColor = if (isPaid) Color(0xFF4CAF50) else Color(0xFFFF9800) // Verde o Naranja
+        val statusText = if (isPaid) "COMPLETADO" else "PENDIENTE"
 
         Scaffold(
             topBar = {
@@ -70,8 +75,21 @@ data class LoanDetailScreen(val loan: Loan, val customer: Customer) : Screen {
                         modifier = Modifier.padding(24.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        StatusBadge(status = "Pendiente") // Valor dinámico según loan.statusId
-                        Spacer(Modifier.height(16.dp))
+                        // Badge Dinámico
+                        Surface(
+                            color = statusColor,
+                            shape = RoundedCornerShape(50),
+                            modifier = Modifier.padding(bottom = 16.dp)
+                        ) {
+                            Text(
+                                text = statusText,
+                                color = Color.White,
+                                style = MaterialTheme.typography.labelMedium,
+                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+
                         Text(
                             text = "${loan.quantity} ${loan.paymentType}",
                             style = MaterialTheme.typography.displaySmall.copy(
@@ -83,6 +101,55 @@ data class LoanDetailScreen(val loan: Loan, val customer: Customer) : Screen {
                             text = "Monto total del préstamo",
                             style = MaterialTheme.typography.bodyMedium.copy(color = Gray200)
                         )
+
+                        Spacer(Modifier.height(24.dp))
+
+                        // Barra de Progreso
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = "Progreso de pago",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.outline
+                                )
+                                Text(
+                                    text = "${(progress * 100).toInt()}%",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    fontWeight = FontWeight.Bold,
+                                    color = statusColor
+                                )
+                            }
+                            Spacer(Modifier.height(8.dp))
+                            LinearProgressIndicator(
+                                progress = { progress },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(10.dp)
+                                    .clip(RoundedCornerShape(5.dp)),
+                                color = statusColor,
+                                trackColor = MaterialTheme.colorScheme.surface
+                            )
+                            Spacer(Modifier.height(8.dp))
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = "Pagado: ${loan.paid}",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = statusColor
+                                )
+                                Text(
+                                    text = "Restante: ${loan.quantity - loan.paid}",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.error
+                                )
+                            }
+                        }
                     }
                 }
 
@@ -103,12 +170,7 @@ data class LoanDetailScreen(val loan: Loan, val customer: Customer) : Screen {
                         modifier = Modifier.padding(16.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        // Manejo seguro de imagen local
-                        val model = if (customer.photo.isNotEmpty() && File(customer.photo).exists()) {
-                            File(customer.photo)
-                        } else {
-                            null
-                        }
+                        val model = if (customer.photo.isNotEmpty()) File(customer.photo) else null
 
                         AsyncImage(
                             model = model,
@@ -151,23 +213,17 @@ data class LoanDetailScreen(val loan: Loan, val customer: Customer) : Screen {
                 ) {
                     Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
                         DetailRow(Icons.Rounded.Description, "Descripción", loan.description)
-                        // Si interestRate es 0.10 (10%), lo multiplicamos por 100 para mostrar "10.0%"
                         DetailRow(Icons.Rounded.Percent, "Tasa de interés", "${loan.interestRate}%")
-
-                        // 2. CORRECCIÓN AQUI: Usar DateMethods.formatDate
                         DetailRow(
                             Icons.Rounded.Event,
                             "Fecha de creación",
                             DateMethods.formatDate(loan.creationDate)
                         )
-
-                        // 3. CORRECCIÓN AQUI: Usar DateMethods.formatDate
                         DetailRow(
                             Icons.Rounded.CalendarMonth,
                             "Fecha límite de pago",
                             DateMethods.formatDate(loan.paymentDate)
                         )
-
                         DetailRow(Icons.Rounded.Paid, "Cantidad pagada", "${loan.paid} ${loan.paymentType}")
                     }
                 }
