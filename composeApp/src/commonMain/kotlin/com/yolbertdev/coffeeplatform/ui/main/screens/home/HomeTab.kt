@@ -163,17 +163,12 @@ object HomeTab : Tab {
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(state.recentLoans) { (loan, customer) ->
-                        MainPaymentItem(
-                            customerNickname = customer.nickname,
-                            customerName = customer.name,
-                            customerPhoto = customer.photo,
-                            amount = "${loan.quantity} ${loan.paymentType}",
-                            date = DateMethods.formatDate(loan.creationDate), // Formatear fecha real
-                            onClick = {
-                                // Navegación al detalle si lo deseas
-                            }
-                        )
+                    items(state.recentLoans) { payment ->
+//                        MainPaymentItem(payment, // Formatear fecha real
+//                            onClick = {
+//                                // Navegación al detalle si lo deseas
+//                            }
+//                        )
                     }
                     item {
                         Spacer(Modifier.height(30.dp))

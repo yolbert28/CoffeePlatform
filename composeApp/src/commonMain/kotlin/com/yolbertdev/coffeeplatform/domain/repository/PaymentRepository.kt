@@ -3,6 +3,7 @@ package com.yolbertdev.coffeeplatform.domain.repository
 import com.yolbertdev.coffeeplatform.domain.model.Loan
 import com.yolbertdev.coffeeplatform.domain.model.Payment
 import com.yolbertdev.coffeeplatform.domain.ports.ReportRow
+import kotlinx.coroutines.flow.Flow
 
 // Clase auxiliar para mostrar en el Dropdown
 data class LoanWithCustomerName(
@@ -17,6 +18,9 @@ interface PaymentRepository {
 
     // Obtiene lista para reportes
     suspend fun getPaymentsForReport(): List<ReportRow>
+
+    // Nuevo método para la UI que incluye detalles del cliente
+    fun getPaymentsWithDetails(): Flow<List<Payment>>
 
     // Obtiene pagos por cliente
     suspend fun getPaymentsByCustomerId(customerId: Long): List<Payment>

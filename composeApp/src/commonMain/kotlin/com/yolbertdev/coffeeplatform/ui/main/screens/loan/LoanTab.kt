@@ -1,4 +1,5 @@
 package com.yolbertdev.coffeeplatform.ui.main.screens.loan
+
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -21,6 +22,7 @@ import com.yolbertdev.coffeeplatform.ui.components.LoanItem
 import com.yolbertdev.coffeeplatform.ui.components.SearchBarApp
 import com.yolbertdev.coffeeplatform.ui.main.screens.loan.add.AddLoanScreen
 import com.yolbertdev.coffeeplatform.ui.main.screens.loan.detail.LoanDetailScreen
+import com.yolbertdev.coffeeplatform.ui.main.screens.payment.add.AddPaymentScreen
 import org.jetbrains.compose.resources.painterResource
 
 object LoanTab : Tab {
@@ -50,12 +52,15 @@ object LoanTab : Tab {
 
         Scaffold(
             floatingActionButton = {
-                FloatingActionButton(
-                    onClick = { navigator.parent?.push(AddLoanScreen()) },
-                    containerColor = MaterialTheme.colorScheme.primary
-                ) {
-                    Icon(Icons.Default.Add, contentDescription = "Nuevo Préstamo")
-                }
+                ExtendedFloatingActionButton(
+                    text = { Text("Nuevo Préstamo") },
+                    icon = { Icon(Icons.Default.Add, contentDescription = null) },
+                    onClick = {
+                        navigator.parent?.push(AddLoanScreen())
+                    },
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                )
             }
         ) { paddingValues ->
             Column(
@@ -78,27 +83,26 @@ object LoanTab : Tab {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         CircularProgressIndicator()
                     }
+                } else if (state.filteredLoans.isEmpty()) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text("No hay préstamos registrados", color = MaterialTheme.colorScheme.outline)
+                    }
                 } else {
                     LazyColumn(
                         modifier = Modifier.weight(1f),
                         verticalArrangement = Arrangement.spacedBy(12.dp),
                         contentPadding = PaddingValues(bottom = 80.dp) // Espacio para el FAB
                     ) {
-                        if (state.filteredLoans.isEmpty()) {
-                            item {
-                                Text(
-                                    text = "No hay préstamos registrados",
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    modifier = Modifier.padding(top = 24.dp)
-                                )
-                            }
-                        } else {
-                            items(state.filteredLoans) { (loan, customer) ->
-                                LoanItem(loan = loan, onClick = {
+                        items(state.filteredLoans) { (loan, customer) ->
+                            LoanItem(
+                                loan = loan,
+                                onClick = {
                                     // Ahora tenemos tanto el Préstamo como el Cliente real para pasar al detalle
                                     navigator.parent?.push(LoanDetailScreen(loan, customer))
-                                }, customerName= customer.name, )
-                            }
+                                },
+                                customerName = customer.name,
+                            )
+
                         }
                     }
                 }

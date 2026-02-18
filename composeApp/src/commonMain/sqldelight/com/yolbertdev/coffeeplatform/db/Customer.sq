@@ -16,6 +16,9 @@ CREATE TABLE customer (
 selectAll:
 SELECT * FROM customer;
 
+selectById:
+SELECT * FROM customer WHERE id = :id;
+
 insert:
 INSERT INTO customer(id_card, name, nickname, description, credit_level, location, photo, status_id)
 VALUES (:id_card, :name, :nickname, :description, :credit_level, :location, :photo, :status_id);

@@ -77,7 +77,7 @@ class AddPaymentScreenModel(
         _state.update { it.copy(note = v) }
     }
 
-    fun savePayment() {
+    fun savePayment(onSuccess: () -> Unit) {
         val s = _state.value
 
         if (s.selectedLoanWrapper == null) {
@@ -114,6 +114,7 @@ class AddPaymentScreenModel(
 
                 createPaymentUseCase(payment, s.selectedLoanWrapper.loan)
                 _state.update { it.copy(success = true, isLoading = false) }
+                onSuccess()
             } catch (e: Exception) {
                 e.printStackTrace()
                 _state.update { it.copy(isLoading = false, error = "Error al guardar: ${e.message}") }

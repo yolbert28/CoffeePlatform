@@ -1,18 +1,22 @@
 package com.yolbertdev.coffeeplatform.ui.main.screens.customer
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -24,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.koin.getScreenModel
+import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.navigator.tab.Tab
@@ -35,6 +40,7 @@ import com.yolbertdev.coffeeplatform.ui.components.FilterSelector
 import com.yolbertdev.coffeeplatform.ui.components.SearchBarApp
 import com.yolbertdev.coffeeplatform.ui.main.screens.customer.add.AddCustomerScreen
 import com.yolbertdev.coffeeplatform.ui.main.screens.customer.detail.CustomerDetailScreen
+import com.yolbertdev.coffeeplatform.ui.main.screens.loan.add.AddLoanScreen
 import org.jetbrains.compose.resources.painterResource
 
 object CustomerTab : Tab {
@@ -55,7 +61,7 @@ object CustomerTab : Tab {
     override fun Content() {
 
         val navigator = LocalNavigator.currentOrThrow
-        val screenModel = getScreenModel<CustomerScreenModel>()
+        val screenModel = koinScreenModel<CustomerScreenModel>()
         val uiState by screenModel.uiState.collectAsState()
 
         var searchQuery by remember { mutableStateOf("") }
@@ -67,12 +73,15 @@ object CustomerTab : Tab {
 
         Scaffold(
             floatingActionButton = {
-                FloatingActionButton(
-                    onClick = { navigator.parent?.push(AddCustomerScreen()) },
-                    containerColor = MaterialTheme.colorScheme.primary
-                ) {
-                    Icon(Icons.Default.Add, contentDescription = "Agregar Cliente")
-                }
+                ExtendedFloatingActionButton(
+                    text = { Text("Nuevo Cliente") },
+                    icon = { Icon(Icons.Default.Add, contentDescription = null) },
+                    onClick = {
+                        navigator.parent?.push(AddCustomerScreen())
+                    },
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                )
             }
         ) { paddingValues ->
             Column(
@@ -92,15 +101,24 @@ object CustomerTab : Tab {
                 Spacer(Modifier.height(4.dp))
                 FilterSelector()
 
-                LazyColumn(
-                    modifier = Modifier.padding(bottom = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    // 2. LISTA REAL: Muestra los clientes que vienen del State (BD)
-                    items(uiState.customers) { customer ->
-                        CustomerListItem(customer = customer) {
-                            navigator.parent?.push(CustomerDetailScreen(customer))
+                if (uiState.customers.isEmpty()) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text(
+                            "No hay clientes registrados",
+                            color = MaterialTheme.colorScheme.outline
+                        )
+                    }
+                } else {
+                    LazyColumn(
+                        modifier = Modifier.padding(bottom = 16.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        // 2. LISTA REAL: Muestra los clientes que vienen del State (BD)
+                        items(uiState.customers) { customer ->
+                            CustomerListItem(customer = customer) {
+                                navigator.parent?.push(CustomerDetailScreen(customer.id))
+                            }
                         }
                     }
                 }

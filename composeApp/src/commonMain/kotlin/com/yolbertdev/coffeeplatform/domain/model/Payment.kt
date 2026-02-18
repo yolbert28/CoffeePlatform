@@ -8,5 +8,6 @@ data class Payment(
     val customerId: Int,
     val creationDate: Long,
     val updateDate: Long,
-    val note: String?
+    val note: String?,
+    val customer: Customer? = null // Añadido para mostrar información del cliente en la UI
 )

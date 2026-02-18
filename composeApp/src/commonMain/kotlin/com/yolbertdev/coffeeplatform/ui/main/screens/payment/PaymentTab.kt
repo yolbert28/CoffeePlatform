@@ -64,7 +64,9 @@ object PaymentTab : Tab {
                         // Navegamos a la pantalla de crear pago
                         // Usamos navigator.parent porque estamos dentro de un Tab
                         navigator.parent?.push(AddPaymentScreen())
-                    }
+                    },
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
                 )
             }
         ) { paddingValues ->
@@ -99,26 +101,11 @@ object PaymentTab : Tab {
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         // Filtramos localmente por búsqueda
-                        val filteredList = state.payments.filter {
-                            it.col1.contains(searchQuery, ignoreCase = true)
-                        }
+                        val filteredList = state.payments
 
-                        items(filteredList) { row ->
-                            // row.col1 = Nombre Cliente
-                            // row.col2 = Fecha
-                            // row.col3 = Monto
-                            // row.col4 = Moneda
-
-                            MainPaymentItem(
-                                customerNickname = row.col1.take(2).uppercase(),
-                                customerName = row.col1,
-                                customerPhoto = "", // Sin foto en el reporte por ahora
-                                amount = "${row.col3} ${row.col4}",
-                                date = row.col2,
-                                onClick = {
-                                    // Acción al hacer clic en un pago de la lista (opcional)
-                                }
-                            )
+                        items(filteredList) { payment ->
+                            MainPaymentItem(payment){
+                            }
                         }
 
                         // Espacio extra al final para que el botón flotante no tape el último item

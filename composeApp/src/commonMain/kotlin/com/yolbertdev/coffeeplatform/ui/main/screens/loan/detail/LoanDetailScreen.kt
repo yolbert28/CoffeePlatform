@@ -112,8 +112,7 @@ data class LoanDetailScreen(val loan: Loan, val customer: Customer) : Screen {
                             ) {
                                 Text(
                                     text = "Progreso de pago",
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.outline
+                                    style = MaterialTheme.typography.bodySmall.copy(color = Gray200)
                                 )
                                 Text(
                                     text = "${(progress * 100).toInt()}%",
@@ -161,7 +160,7 @@ data class LoanDetailScreen(val loan: Loan, val customer: Customer) : Screen {
                 Surface(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { navigator.push(CustomerDetailScreen(customer)) },
+                        .clickable { navigator.push(CustomerDetailScreen(customer.id)) },
                     shape = RoundedCornerShape(16.dp),
                     color = Color.White,
                     shadowElevation = 2.dp

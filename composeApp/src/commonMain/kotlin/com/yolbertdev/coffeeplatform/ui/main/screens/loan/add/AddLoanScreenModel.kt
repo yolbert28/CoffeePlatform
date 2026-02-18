@@ -80,7 +80,7 @@ class AddLoanScreenModel(
     fun onCreationDateChanged(dateMillis: Long) {
         _uiState.update { it.copy(creationDate = dateMillis) }
     }
-    fun saveLoan() {
+    fun saveLoan(onSuccess: () -> Unit) {
         val state = _uiState.value
         var hasError = false
 
@@ -124,6 +124,7 @@ class AddLoanScreenModel(
                 insertLoanUseCase(loan)
                 // Indicamos éxito para que la UI reaccione
                 _uiState.update { it.copy(showSuccessMessage = true) }
+                onSuccess()
             } catch (e: Exception) {
                 e.printStackTrace()
             } finally {

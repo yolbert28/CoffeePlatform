@@ -14,6 +14,33 @@ insert:
 INSERT INTO payment(loan_id, amount, payment_date, note)
 VALUES (:loanId, :amount, :paymentDate, :note);
 
+-- Consulta para la UI (trae todos los detalles)
+selectWithDetails:
+SELECT
+    p.id AS payment_id,
+    p.loan_id,
+    p.amount,
+    p.payment_date,
+    p.note,
+    p.update_date AS payment_update_date,
+    c.id AS customer_id,
+    c.name AS customer_name,
+    c.nickname AS customer_nickname,
+    c.photo AS customer_photo,
+    c.location AS customer_location,
+    c.id_card AS customer_id_card,
+    c.description AS customer_description,
+    c.credit_level AS customer_credit_level,
+    c.creation_date AS customer_creation_date,
+    c.update_date AS customer_update_date,
+    c.status_id AS customer_status_id,
+    pt.name AS currency_name
+FROM payment p
+JOIN loan l ON p.loan_id = l.id
+JOIN customer c ON l.customer_id = c.id
+JOIN payment_type pt ON l.payment_type_id = pt.id
+ORDER BY p.payment_date DESC;
+
 -- Consulta para Reportes (Hacemos JOIN con Loan -> Customer -> PaymentType)
 selectPaymentsForReport:
 SELECT

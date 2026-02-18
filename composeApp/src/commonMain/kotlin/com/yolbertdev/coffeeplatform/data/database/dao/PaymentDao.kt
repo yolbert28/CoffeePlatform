@@ -1,7 +1,12 @@
 package com.yolbertdev.coffeeplatform.data.database.dao
 
+import app.cash.sqldelight.coroutines.asFlow
+import app.cash.sqldelight.coroutines.mapToList
 import com.yolbertdev.coffeeplatform.db.CoffeeDatabase
-import com.yolbertdev.coffeeplatform.db.PaymentQueries
+import com.yolbertdev.coffeeplatform.db.SelectWithDetails
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.flow.Flow
 
 class PaymentDao(
     private val database: CoffeeDatabase
@@ -30,5 +35,11 @@ class PaymentDao(
     // Obtiene pagos de un cliente específico
     fun getPaymentsByCustomer(customerId: Long) =
         queries.selectByCustomerId(customerId).executeAsList()
-}
 
+    // El DAO ahora solo devuelve el tipo generado por SQLDelight
+    fun getPaymentsWithDetails(): Flow<List<SelectWithDetails>> {
+        return queries.selectWithDetails()
+            .asFlow()
+            .mapToList(Dispatchers.IO)
+    }
+}

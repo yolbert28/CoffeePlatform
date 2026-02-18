@@ -11,14 +11,17 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
+import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.yolbertdev.coffeeplatform.domain.repository.LoanWithCustomerName
 import com.yolbertdev.coffeeplatform.ui.components.PrimaryButton
-import com.yolbertdev.coffeeplatform.ui.components.TextFieldApp
+import com.yolbertdev.coffeeplatform.ui.components.SecondaryTextFieldApp
 import com.yolbertdev.coffeeplatform.util.DateMethods
 import kotlinx.coroutines.delay
 
@@ -28,14 +31,13 @@ class AddPaymentScreen : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-        val viewModel = getScreenModel<AddPaymentScreenModel>()
+        val viewModel = koinScreenModel<AddPaymentScreenModel>()
         val state by viewModel.state.collectAsState()
 
         val snackbarHostState = remember { SnackbarHostState() }
         var showDatePicker by remember { mutableStateOf(false) }
         val datePickerState = rememberDatePickerState(initialSelectedDateMillis = state.paymentDate)
 
-        // Manejo del éxito
         LaunchedEffect(state.success) {
             if (state.success) {
                 snackbarHostState.showSnackbar("Pago registrado exitosamente")
@@ -61,7 +63,7 @@ class AddPaymentScreen : Screen {
             snackbarHost = { SnackbarHost(snackbarHostState) },
             topBar = {
                 TopAppBar(
-                    title = { Text("Registrar Pago") },
+                    title = { Text("Registrar Pago", style = MaterialTheme.typography.titleMedium) },
                     navigationIcon = {
                         IconButton(onClick = { navigator.pop() }) {
                             Icon(Icons.Rounded.ArrowBackIosNew, "Atrás")
@@ -74,18 +76,18 @@ class AddPaymentScreen : Screen {
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(padding)
-                    .padding(16.dp)
+                    .padding(horizontal = 24.dp)
                     .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                // 1. Dropdown para seleccionar préstamo
+                Spacer(Modifier.height(8.dp))
+
                 LoanDropdown(
                     loans = state.pendingLoans,
                     selectedLoan = state.selectedLoanWrapper,
                     onLoanSelected = { viewModel.onLoanSelected(it) }
                 )
 
-                // Tarjeta de Información de Deuda
                 if (state.selectedLoanWrapper != null) {
                     Card(
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
@@ -102,44 +104,36 @@ class AddPaymentScreen : Screen {
                     }
                 }
 
-                // 2. Campo Monto
-                TextFieldApp(
+                FormField(
+                    label = "Monto a abonar",
                     value = state.amount,
                     onValueChange = { viewModel.onAmountChanged(it) },
-                    label = "Monto a abonar",
-                    imageVector = Icons.Default.AttachMoney,
+                    icon = Icons.Default.AttachMoney,
                     trailingIcon = {
-                        if(state.currency.isNotEmpty()) Text(state.currency, modifier = Modifier.padding(end = 8.dp))
+                        if(state.currency.isNotEmpty()) Text(state.currency, modifier = Modifier.padding(end = 12.dp))
                     }
                 )
 
-                // 3. Campo Fecha
                 Box(modifier = Modifier.fillMaxWidth()) {
-                    TextFieldApp(
+                    FormField(
+                        label = "Fecha del Pago",
                         value = DateMethods.formatDate(state.paymentDate),
                         onValueChange = {},
-                        label = "Fecha del Pago",
                         readOnly = true,
-                        imageVector = Icons.Default.CalendarMonth
+                        icon = Icons.Default.CalendarMonth
                     )
-                    // Capa invisible para detectar el clic
-                    Box(
-                        modifier = Modifier
-                            .matchParentSize()
-                            .clickable { showDatePicker = true }
-                    )
+                    Box(modifier = Modifier.matchParentSize().clickable { showDatePicker = true })
                 }
 
-                // 4. Campo Nota
-                TextFieldApp(
+                FormField(
+                    label = "Nota (Efectivo / Trueque)",
                     value = state.note,
                     onValueChange = { viewModel.onNoteChanged(it) },
-                    label = "Nota (Efectivo / Trueque)",
-                    imageVector = Icons.Default.Description
+                    icon = Icons.Default.Description
                 )
 
                 if (state.error != null) {
-                    Text(state.error!!, color = MaterialTheme.colorScheme.error)
+                    Text(state.error!!, color = MaterialTheme.colorScheme.error, modifier = Modifier.padding(start = 12.dp))
                 }
 
                 Spacer(Modifier.height(8.dp))
@@ -149,14 +143,43 @@ class AddPaymentScreen : Screen {
                 } else {
                     PrimaryButton(
                         text = "Guardar Pago",
-                        onClick = { viewModel.savePayment() },
+                        onClick = { viewModel.savePayment{ navigator.pop() } },
+                        modifier = Modifier.fillMaxWidth().height(56.dp),
                         enabled = state.selectedLoanWrapper != null
                     )
                 }
+                 Spacer(Modifier.height(24.dp))
             }
         }
     }
 }
+
+@Composable
+private fun FormField(
+    label: String,
+    icon: ImageVector,
+    value: String,
+    onValueChange: (String) -> Unit,
+    readOnly: Boolean = false,
+    trailingIcon: @Composable (() -> Unit)? = null
+) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)),
+            modifier = Modifier.padding(start = 8.dp, bottom = 4.dp)
+        )
+        SecondaryTextFieldApp(
+            value = value,
+            onValueChange = onValueChange,
+            readOnly = readOnly,
+            placeholder = { Text("Escribir...", color = MaterialTheme.colorScheme.outline, style = MaterialTheme.typography.bodyMedium) },
+            leadingIcon = { Icon(icon, null, modifier = Modifier.size(20.dp), tint = MaterialTheme.colorScheme.primary) },
+            trailingIcon = trailingIcon
+        )
+    }
+}
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -167,49 +190,52 @@ fun LoanDropdown(
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = { expanded = !expanded }
-    ) {
-        OutlinedTextField(
-            value = selectedLoan?.let { "${it.customerName} - ${it.loan.quantity} ${it.currency}" } ?: "",
-            onValueChange = {},
-            readOnly = true,
-            label = { Text("Seleccionar Préstamo Pendiente") },
-            placeholder = { Text("Busca por cliente...") },
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            modifier = Modifier.fillMaxWidth().menuAnchor(),
-            colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors()
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Text(
+            text = "Préstamo Pendiente",
+            style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)),
+            modifier = Modifier.padding(start = 8.dp, bottom = 4.dp)
         )
-
-        ExposedDropdownMenu(
+        ExposedDropdownMenuBox(
             expanded = expanded,
-            onDismissRequest = { expanded = false }
+            onExpandedChange = { expanded = !expanded }
         ) {
-            if (loans.isEmpty()) {
-                DropdownMenuItem(
-                    text = { Text("No hay préstamos pendientes") },
-                    onClick = { expanded = false }
-                )
-            } else {
-                loans.forEach { wrapper ->
-                    val remaining = wrapper.loan.quantity - wrapper.loan.paid
-                    DropdownMenuItem(
-                        text = {
-                            Column {
-                                Text(wrapper.customerName, style = MaterialTheme.typography.bodyLarge)
-                                Text(
-                                    "Deuda: $remaining ${wrapper.currency}",
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.outline
-                                )
+            SecondaryTextFieldApp(
+                value = selectedLoan?.let { "${it.customerName} - ${it.loan.quantity} ${it.currency}" } ?: "",
+                onValueChange = {},
+                readOnly = true,
+                placeholder = { Text("Seleccionar Préstamo", color = MaterialTheme.colorScheme.outline) },
+                leadingIcon = { Icon(Icons.Default.Person, null, modifier = Modifier.size(20.dp), tint = MaterialTheme.colorScheme.primary) },
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                modifier = Modifier.menuAnchor()
+            )
+
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false }
+            ) {
+                if (loans.isEmpty()) {
+                    DropdownMenuItem(text = { Text("No hay préstamos pendientes") }, onClick = { expanded = false })
+                } else {
+                    loans.forEach { wrapper ->
+                        val remaining = wrapper.loan.quantity - wrapper.loan.paid
+                        DropdownMenuItem(
+                            text = {
+                                Column {
+                                    Text(wrapper.customerName, style = MaterialTheme.typography.bodyLarge)
+                                    Text(
+                                        "Deuda: $remaining ${wrapper.currency}",
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.outline
+                                    )
+                                }
+                            },
+                            onClick = {
+                                onLoanSelected(wrapper)
+                                expanded = false
                             }
-                        },
-                        onClick = {
-                            onLoanSelected(wrapper)
-                            expanded = false
-                        }
-                    )
+                        )
+                    }
                 }
             }
         }

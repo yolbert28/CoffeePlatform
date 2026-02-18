@@ -19,15 +19,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.yolbertdev.coffeeplatform.domain.model.Payment
 import com.yolbertdev.coffeeplatform.ui.theme.Gray200
+import com.yolbertdev.coffeeplatform.util.DateMethods
 
 @Composable
 fun MainPaymentItem(
-    customerName: String,
-    customerNickname: String,
-    customerPhoto: String,
-    amount: String,
-    date: String,
+    payment: Payment,
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
@@ -51,7 +49,7 @@ fun MainPaymentItem(
         ) {
             // Foto del cliente
             AsyncImage(
-                model = customerPhoto,
+                model = payment.customer?.photo ?: "",
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -65,7 +63,7 @@ fun MainPaymentItem(
             // Información del cliente
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = customerNickname,
+                    text = payment.customer?.nickname ?: "",
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface
@@ -74,7 +72,7 @@ fun MainPaymentItem(
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = customerName,
+                    text = payment.customer?.name ?: "",
                     style = MaterialTheme.typography.bodySmall.copy(
                         color = Gray200
                     ),
@@ -93,7 +91,7 @@ fun MainPaymentItem(
                     )
                     Spacer(Modifier.width(4.dp))
                     Text(
-                        text = date,
+                        text = DateMethods.formatDate(payment.creationDate),
                         style = MaterialTheme.typography.labelSmall.copy(color = Gray200)
                     )
                 }
@@ -120,7 +118,7 @@ fun MainPaymentItem(
                         )
                         Spacer(Modifier.width(4.dp))
                         Text(
-                            text = amount,
+                            text = payment.amount.toString(),
                             style = MaterialTheme.typography.labelLarge.copy(
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.primary

@@ -108,7 +108,7 @@ data class PaymentDetailScreen(
                 Surface(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { navigator.push(CustomerDetailScreen(customer)) },
+                        .clickable { navigator.push(CustomerDetailScreen(customer.id)) },
                     shape = RoundedCornerShape(16.dp),
                     color = Color.White,
                     shadowElevation = 2.dp

@@ -9,10 +9,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ReceiptLong
-import androidx.compose.material.icons.rounded.ArrowBackIosNew
-import androidx.compose.material.icons.rounded.Edit
-import androidx.compose.material.icons.rounded.Info
-import androidx.compose.material.icons.rounded.Payments
+import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -23,21 +20,18 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.koin.getScreenModel
+import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import coil3.compose.AsyncImage
 import com.yolbertdev.coffeeplatform.domain.model.Customer
 import com.yolbertdev.coffeeplatform.ui.components.ListItemFormatRow
 import com.yolbertdev.coffeeplatform.ui.components.LoanItem
-import com.yolbertdev.coffeeplatform.ui.components.MainPaymentItem
 import com.yolbertdev.coffeeplatform.ui.components.PaymentItem
 import com.yolbertdev.coffeeplatform.ui.components.SearchBarApp
 import com.yolbertdev.coffeeplatform.ui.main.screens.customer.edit.EditCustomerScreen
-import com.yolbertdev.coffeeplatform.ui.main.screens.loan.detail.LoanDetailScreen
 import com.yolbertdev.coffeeplatform.ui.theme.Gray200
 import com.yolbertdev.coffeeplatform.util.DateMethods
-import java.io.File
 
 enum class CustomerDetailSection(val title: String, val icon: ImageVector) {
     INFO("Información", Icons.Rounded.Info),
@@ -45,19 +39,17 @@ enum class CustomerDetailSection(val title: String, val icon: ImageVector) {
     PAYMENTS("Pagos", Icons.Rounded.Payments)
 }
 
-data class CustomerDetailScreen(val customer: Customer) : Screen {
+data class CustomerDetailScreen(val customerId: Long) : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-
-        // Inyección del ViewModel
-        val viewModel = getScreenModel<CustomerDetailScreenModel>()
+        val viewModel = koinScreenModel<CustomerDetailScreenModel>()
         val state by viewModel.uiState.collectAsState()
 
-        // Efecto lanzado una sola vez para cargar los datos
-        LaunchedEffect(customer.id) {
-            viewModel.loadData(customer.id)
+        // Disparamos la carga cada vez que el ID cambie o la pantalla se componga
+        LaunchedEffect(customerId) {
+            viewModel.loadData(customerId)
         }
 
         var selectedSection by remember { mutableStateOf(CustomerDetailSection.INFO) }
@@ -66,174 +58,130 @@ data class CustomerDetailScreen(val customer: Customer) : Screen {
             topBar = {
                 TopAppBar(
                     title = {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                imageVector = Icons.Rounded.ArrowBackIosNew,
-                                contentDescription = "Regresar",
-                                modifier = Modifier
-                                    .size(24.dp)
-                                    .clickable { navigator.pop() }
-                            )
-                            Spacer(Modifier.width(16.dp))
-                            Text(
-                                text = customer.name,
-                                style = MaterialTheme.typography.titleMedium
-                            )
+                        Text(
+                            text = state.customer?.name ?: "Detalles",
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = { navigator.pop() }) {
+                            Icon(Icons.Rounded.ArrowBackIosNew, "Regresar")
                         }
                     }
                 )
             }
         ) { padding ->
-            Column(modifier = Modifier.padding(padding)) {
-                // Cabecera fija (Foto y nombres)
-                Column(
-                    modifier = Modifier.fillMaxWidth().padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    // Manejo seguro de la imagen local
-                    val model = if (customer.photo.isNotEmpty() && File(customer.photo).exists()) {
-                        File(customer.photo)
-                    } else {
-                        // Un placeholder o recurso por defecto si no hay foto
-                        // Res.drawable.default_avatar
-                        null
-                    }
-
-                    AsyncImage(
-                        model = model,
-                        contentDescription = customer.name,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .size(120.dp)
-                            .clip(CircleShape)
-                            .background(Gray200) // Fondo gris mientras carga o si es null
-                    )
-                    Spacer(Modifier.height(12.dp))
-                    Text(
-                        text = customer.nickname,
-                        style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
-                    )
-                    Text(
-                        text = customer.name,
-                        style = MaterialTheme.typography.bodyMedium.copy(color = Gray200)
-                    )
-                    Spacer(Modifier.height(16.dp))
-
-                    OutlinedButton(
-                        onClick = { navigator.push(EditCustomerScreen(customer))},
-                        shape = RoundedCornerShape(10.dp),
-                        modifier = Modifier.fillMaxWidth(0.6f),
-                        colors = ButtonDefaults.outlinedButtonColors(
-                            contentColor = MaterialTheme.colorScheme.primary
-                        )
-                    ) {
-                        Icon(Icons.Rounded.Edit, null, modifier = Modifier.size(16.dp))
-                        Spacer(Modifier.width(8.dp))
-                        Text("Editar Perfil", style = MaterialTheme.typography.labelLarge)
-                    }
+            // MOSTRAR LOADING GLOBAL SI ESTÁ CARGANDO
+            if (state.isLoading) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
                 }
-
-                // Selector de Secciones
-                SecondaryTabRow(
-                    selectedTabIndex = selectedSection.ordinal,
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    contentColor = MaterialTheme.colorScheme.primary
-                ) {
-                    CustomerDetailSection.entries.forEach { section ->
-                        Tab(
-                            selected = selectedSection == section,
-                            onClick = { selectedSection = section },
-                            text = {
-                                Text(
-                                    text = section.title,
-                                    style = MaterialTheme.typography.labelLarge
+            } else if (state.customer != null) {
+                Column(modifier = Modifier.padding(padding)) {
+                    // Cabecera fija (Foto y nombres)
+                    Column(
+                        modifier = Modifier.fillMaxWidth().padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(120.dp)
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.surfaceVariant),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            if (!state.customer?.photo.isNullOrEmpty()) {
+                                AsyncImage(
+                                    model = state.customer?.photo,
+                                    contentDescription = state.customer?.name,
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier.fillMaxSize()
                                 )
-                            },
-                            icon = {
+                            } else {
                                 Icon(
-                                    imageVector = section.icon,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(20.dp)
+                                    Icons.Rounded.Person,
+                                    null,
+                                    modifier = Modifier.size(64.dp),
+                                    tint = Gray200
                                 )
                             }
+                        }
+                        
+                        Spacer(Modifier.height(12.dp))
+                        Text(
+                            text = state.customer?.nickname ?: "",
+                            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
                         )
-                    }
-                }
+                        Text(
+                            text = state.customer?.name ?: "",
+                            style = MaterialTheme.typography.bodyMedium.copy(color = Gray200)
+                        )
+                        Spacer(Modifier.height(16.dp))
 
-                // Contenido Dinámico con LazyColumn
-                if (state.isLoading) {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator()
+                        OutlinedButton(
+                            onClick = {
+                                navigator.push(EditCustomerScreen(state.customer!!))
+                            },
+                            shape = RoundedCornerShape(10.dp),
+                            modifier = Modifier.fillMaxWidth(0.6f)
+                        ) {
+                            Icon(Icons.Rounded.Edit, null, modifier = Modifier.size(16.dp))
+                            Spacer(Modifier.width(8.dp))
+                            Text("Editar Perfil")
+                        }
                     }
-                } else {
+
+                    // Selector de Secciones
+                    SecondaryTabRow(
+                        selectedTabIndex = selectedSection.ordinal,
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        contentColor = MaterialTheme.colorScheme.primary
+                    ) {
+                        CustomerDetailSection.entries.forEach { section ->
+                            Tab(
+                                selected = selectedSection == section,
+                                onClick = { selectedSection = section },
+                                text = { Text(section.title) },
+                                icon = { Icon(section.icon, null, modifier = Modifier.size(20.dp)) }
+                            )
+                        }
+                    }
+
+                    // Contenido Dinámico
                     LazyColumn(
                         modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
                         contentPadding = PaddingValues(vertical = 16.dp)
                     ) {
                         when (selectedSection) {
                             CustomerDetailSection.INFO -> {
-                                item {
-                                    InfoSection(customer)
-                                }
+                                item { InfoSection(state.customer!!) }
                             }
 
                             CustomerDetailSection.LOANS -> {
-                                item {
-                                    // Podrías mover el estado del search al ViewModel si quieres filtrar la lista 'state.loans'
-                                    var searchQuery by remember { mutableStateOf("") }
-                                    SearchBarApp(
-                                        value = searchQuery,
-                                        onValueChange = { searchQuery = it },
-                                        placeholder = "Buscar préstamos..."
-                                    )
-                                    Spacer(Modifier.height(8.dp))
-                                }
-
-                                // Renderizar lista real
                                 if (state.loans.isEmpty()) {
-                                    item {
-                                        Text("No hay préstamos registrados", modifier = Modifier.padding(16.dp))
-                                    }
+                                    item { EmptyState("No hay préstamos registrados") }
                                 } else {
                                     items(state.loans) { loan ->
-                                        LoanItem(loan = loan, onClick = { }, customerName = customer.name)
+                                        LoanItem(
+                                            loan = loan,
+                                            onClick = { },
+                                            customerName = state.customer?.name ?: ""
+                                        )
                                         Spacer(Modifier.height(8.dp))
                                     }
                                 }
                             }
 
                             CustomerDetailSection.PAYMENTS -> {
-                                // Aquí iría la lógica similar para pagos cuando tengas el repositorio
-                                item {
-                                    Text("Historial de pagos", style = MaterialTheme.typography.titleMedium,
-                                        fontWeight = FontWeight.Bold,
-                                        modifier = Modifier.padding(top = 8.dp))
-                                }
-                                if (state.isLoading) {
-                                    item {
-                                        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                                            CircularProgressIndicator()
-                                        }
-                                    }
-                                } else if (state.payments.isEmpty()) {
-                                    item {
-                                        Text(
-                                            "No hay pagos registrados para este cliente.",
-                                            style = MaterialTheme.typography.bodyMedium,
-                                            color = MaterialTheme.colorScheme.outline,
-                                            modifier = Modifier.padding(vertical = 8.dp)
-                                        )
-                                    }
+                                if (state.payments.isEmpty()) {
+                                    item { EmptyState("No hay pagos registrados") }
                                 } else {
-                                    // Lista de Pagos
                                     items(state.payments) { payment ->
-                                        MainPaymentItem(
-                                            customerNickname = "", // No necesario en detalle
-                                            customerName = "Pago realizado", // Título genérico o nota
-                                            customerPhoto = "", // No mostramos foto repetida
-                                            amount = "${payment.amount} ${payment.paymentType}",
+                                        PaymentItem(
+                                            amount = payment.amount,
+                                            paymentType = payment.paymentType,
                                             date = DateMethods.formatDate(payment.creationDate),
-                                            onClick = { /* Opcional: ver detalle del pago */ }
+                                            modifier = Modifier.fillMaxWidth()
                                         )
                                     }
                                 }
@@ -248,22 +196,17 @@ data class CustomerDetailScreen(val customer: Customer) : Screen {
     @Composable
     private fun InfoSection(customer: Customer) {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            ListItemFormatRow(
-                title = "Descripción:",
-                value = customer.description,
-                style = MaterialTheme.typography.bodyLarge
-            )
-            ListItemFormatRow(
-                title = "Nivel de crédito:",
-                value = customer.creditLevel.toString(),
-                style = MaterialTheme.typography.bodyLarge
-            )
-            ListItemFormatRow(
-                title = "Ubicación:",
-                value = customer.location,
-                style = MaterialTheme.typography.bodyLarge
-            )
-            // Puedes agregar más campos aquí, como fecha de registro, etc.
+            ListItemFormatRow(title = "Descripción:", value = customer.description)
+            ListItemFormatRow(title = "Nivel de crédito:", value = customer.creditLevel.toString())
+            ListItemFormatRow(title = "Ubicación:", value = customer.location)
+            ListItemFormatRow(title = "Cédula:", value = customer.idCard ?: "")
+        }
+    }
+
+    @Composable
+    private fun EmptyState(message: String) {
+        Box(modifier = Modifier.fillMaxWidth().padding(32.dp), contentAlignment = Alignment.Center) {
+            Text(message, style = MaterialTheme.typography.bodyMedium, color = Gray200)
         }
     }
 }

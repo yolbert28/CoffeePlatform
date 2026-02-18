@@ -15,6 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
@@ -78,8 +79,8 @@ class AddCustomerScreen() : Screen {
                     // FOTO DE PERFIL CON BADGE DE CÁMARA
                     Box(
                         modifier = Modifier
-                            .size(140.dp)
-                            .padding(bottom = 24.dp),
+                            .padding(bottom = 24.dp)
+                            .size(140.dp),
                         contentAlignment = Alignment.BottomEnd
                     ) {
                         Box(

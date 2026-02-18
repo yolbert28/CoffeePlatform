@@ -3,12 +3,7 @@ package com.yolbertdev.coffeeplatform.ui.main
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.*
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -19,6 +14,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.tab.CurrentTab
 import cafe.adriel.voyager.navigator.tab.TabDisposable
 import cafe.adriel.voyager.navigator.tab.TabNavigator
+import com.yolbertdev.coffeeplatform.getPlatform
 import com.yolbertdev.coffeeplatform.ui.components.navigation.CustomNavigationBar
 import com.yolbertdev.coffeeplatform.ui.components.navigation.CustomNavigationRail
 import com.yolbertdev.coffeeplatform.ui.main.screens.ReportTab
@@ -33,6 +29,7 @@ class MainScreen : Screen {
     override fun Content() {
         val windowSize = currentWindowAdaptiveInfo().windowSizeClass
         val medium = windowSize.isWidthAtLeastBreakpoint(WindowSizeClass.Companion.WIDTH_DP_EXPANDED_LOWER_BOUND)
+        val isDesktop = getPlatform().name.contains("Java", ignoreCase = true) || getPlatform().name.contains("Desktop", ignoreCase = true)
 
         TabNavigator(
             HomeTab,
@@ -54,7 +51,8 @@ class MainScreen : Screen {
 
             Scaffold(
                 topBar = {
-                    if (sectionTitle != null) {
+                    // Solo mostramos la TopBar si hay un título Y NO es Desktop
+                    if (sectionTitle != null && !isDesktop) {
                         TopAppBar(
                             title = {
                                 Text(
@@ -75,7 +73,6 @@ class MainScreen : Screen {
                         CustomNavigationBar()
                     }
                 }
-                // ELIMINADO: floatingActionButton que causaba duplicidad
             ) { innerPadding ->
                 Row(
                     modifier = Modifier.padding(innerPadding)

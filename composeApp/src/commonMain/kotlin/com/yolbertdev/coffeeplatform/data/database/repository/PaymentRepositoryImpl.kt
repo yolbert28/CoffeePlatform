@@ -2,6 +2,7 @@ package com.yolbertdev.coffeeplatform.data.database.repository
 
 import com.yolbertdev.coffeeplatform.data.database.dao.PaymentDao
 import com.yolbertdev.coffeeplatform.db.CoffeeDatabase
+import com.yolbertdev.coffeeplatform.domain.model.Customer
 import com.yolbertdev.coffeeplatform.domain.model.Loan
 import com.yolbertdev.coffeeplatform.domain.model.Payment
 import com.yolbertdev.coffeeplatform.domain.ports.ReportRow
@@ -9,6 +10,8 @@ import com.yolbertdev.coffeeplatform.domain.repository.LoanWithCustomerName
 import com.yolbertdev.coffeeplatform.domain.repository.PaymentRepository
 import com.yolbertdev.coffeeplatform.util.DateMethods
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 class PaymentRepositoryImpl(
@@ -18,7 +21,6 @@ class PaymentRepositoryImpl(
 
     override suspend fun insertPayment(payment: Payment, currentLoan: Loan) = withContext(Dispatchers.IO) {
         db.transaction {
-            // 1. Insertar el pago en la tabla Payment
             dao.insert(
                 loanId = payment.loanId.toLong(),
                 amount = payment.amount,
@@ -26,16 +28,10 @@ class PaymentRepositoryImpl(
                 note = payment.note
             )
 
-            // 2. Calcular nuevo total pagado
             val newPaidAmount = currentLoan.paid + payment.amount
-
-            // 3. Determinar si se completó (Status 2 = Pagado, 1 = Pendiente)
-            // Usamos una pequeña tolerancia (0.01) para errores de decimales
             val isFullyPaid = newPaidAmount >= (currentLoan.quantity - 0.01)
             val newStatusId = if (isFullyPaid) 2L else 1L
 
-            // 4. Actualizar el préstamo en la tabla Loan
-            // Nota: Asegúrate de tener 'updatePaymentProgress' en Loan.sq
             db.loanQueries.updatePaymentProgress(
                 paidAmount = newPaidAmount,
                 statusId = newStatusId,
@@ -56,8 +52,37 @@ class PaymentRepositoryImpl(
         }
     }
 
+    override fun getPaymentsWithDetails(): Flow<List<Payment>> {
+        return dao.getPaymentsWithDetails().map { list ->
+            list.map {
+                Payment(
+                    id = it.payment_id,
+                    loanId = it.loan_id.toInt(),
+                    amount = it.amount,
+                    paymentType = it.currency_name ?: "USD",
+                    customerId = it.customer_id.toInt(),
+                    creationDate = it.payment_date,
+                    updateDate = it.payment_update_date,
+                    note = it.note,
+                    customer = Customer(
+                        id = it.customer_id,
+                        name = it.customer_name,
+                        nickname = it.customer_nickname,
+                        location = it.customer_location,
+                        idCard = it.customer_id_card ?: "",
+                        description = it.customer_description,
+                        photo = it.customer_photo,
+                        creditLevel = it.customer_credit_level,
+                        statusId = it.customer_status_id,
+                        creationDate = it.customer_creation_date,
+                        updateDate = it.customer_update_date
+                    )
+                )
+            }
+        }
+    }
+
     override suspend fun getPaymentsByCustomerId(customerId: Long): List<Payment> {
-        // Mapea los resultados de la consulta JOIN a tu objeto de dominio Payment
         return dao.getPaymentsByCustomer(customerId).map {
             Payment(
                 id = it.id,
@@ -65,7 +90,6 @@ class PaymentRepositoryImpl(
                 loanId = it.loan_id.toInt(),
                 creationDate = it.payment_date,
                 note = it.note ?: "",
-                // Lógica simple para tipo de moneda basada en ID
                 paymentType = if (it.payment_type_id == 1L) "USD" else "QT",
                 customerId = it.customer_id.toInt(),
                 updateDate = it.update_date
@@ -74,7 +98,6 @@ class PaymentRepositoryImpl(
     }
 
     override suspend fun getPendingLoans(): List<LoanWithCustomerName> = withContext(Dispatchers.IO) {
-        // Nota: Asegúrate de tener 'selectPendingLoans' en Loan.sq
         db.loanQueries.selectPendingLoans().executeAsList().map {
             LoanWithCustomerName(
                 loan = Loan(

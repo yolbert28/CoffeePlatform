@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.yolbertdev.coffeeplatform.domain.model.Loan
+import com.yolbertdev.coffeeplatform.ui.theme.Gray200
 import com.yolbertdev.coffeeplatform.util.DateMethods
 
 @Composable
@@ -61,8 +62,7 @@ fun LoanItem(
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = "Vence: ${DateMethods.formatDate(loan.paymentDate)}",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.outline
+                    style = MaterialTheme.typography.bodySmall.copy(color = Gray200)
                 )
             }
 

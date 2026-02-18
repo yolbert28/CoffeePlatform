@@ -1,18 +1,20 @@
 package com.yolbertdev.coffeeplatform.data.database.dao
 
-//import com.android.tools.r8.graph.db.CoffeeDatabase
+import app.cash.sqldelight.coroutines.asFlow
+import app.cash.sqldelight.coroutines.mapToOneOrNull
 import com.yolbertdev.coffeeplatform.db.CoffeeDatabase
 import com.yolbertdev.coffeeplatform.util.DateMethods
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.flow.Flow
 import com.yolbertdev.coffeeplatform.db.Customer as CustomerDb
 
 class CustomerDao(
     private val database: CoffeeDatabase
 ){
-
     private val queries = database.customerQueries
 
     fun insert(customer: CustomerDb) {
-
         queries.insert(
             id_card = customer.id_card,
             name = customer.name,
@@ -20,17 +22,21 @@ class CustomerDao(
             description = customer.description,
             credit_level = customer.credit_level,
             location = customer.location,
-            photo = customer.photo, // Pasa null si la columna es nulable y no tienes foto
+            photo = customer.photo,
             status_id = customer.status_id
         )
-
-        println("Customer inserted: ${queries.selectAll().executeAsList()}")
-
     }
 
     fun selectAll(): List<CustomerDb> {
         return queries.selectAll().executeAsList()
     }
+
+    fun selectByIdFlow(id: Long): Flow<CustomerDb?> {
+        return queries.selectById(id)
+            .asFlow()
+            .mapToOneOrNull(Dispatchers.IO)
+    }
+
     fun update(customer: CustomerDb) {
         database.customerQueries.update(
             name = customer.name,

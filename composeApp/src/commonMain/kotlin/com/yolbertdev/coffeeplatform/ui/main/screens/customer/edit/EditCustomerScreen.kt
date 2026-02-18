@@ -1,5 +1,7 @@
 package com.yolbertdev.coffeeplatform.ui.main.screens.customer.edit
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -13,42 +15,37 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.koin.getScreenModel
+import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import coil3.compose.AsyncImage
 import com.yolbertdev.coffeeplatform.domain.model.Customer
+import com.yolbertdev.coffeeplatform.ui.components.FormField
 import com.yolbertdev.coffeeplatform.ui.components.PrimaryButton
-import com.yolbertdev.coffeeplatform.ui.components.TextFieldApp
-// Importamos el launcher común que creamos en el paso anterior
 import com.yolbertdev.coffeeplatform.ui.main.screens.customer.add.rememberGalleryLauncher
-import java.io.File
 
 data class EditCustomerScreen(val customer: Customer) : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-        val viewModel = getScreenModel<EditCustomerScreenModel>()
+        val viewModel = koinScreenModel<EditCustomerScreenModel>()
         val state by viewModel.state.collectAsState()
 
-        // Inicialización de datos
         LaunchedEffect(Unit) {
             viewModel.init(customer)
         }
 
-        // Navegación al guardar
         LaunchedEffect(state.isSaved) {
             if (state.isSaved) {
                 navigator.pop()
             }
         }
 
-        // --- CORRECCIÓN AQUÍ ---
-        // Usamos el launcher común en lugar del específico de Android
         val launchGallery = rememberGalleryLauncher { bytes ->
             if (bytes != null) {
                 viewModel.onPhotoSelected(bytes)
@@ -58,63 +55,126 @@ data class EditCustomerScreen(val customer: Customer) : Screen {
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text("Editar Cliente") },
+                    title = { Text("Editar Perfil", style = MaterialTheme.typography.titleMedium) },
                     navigationIcon = {
                         IconButton(onClick = { navigator.pop() }) {
                             Icon(Icons.Rounded.ArrowBackIosNew, "Atrás")
                         }
-                    }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.background
+                    )
                 )
             }
         ) { padding ->
             Column(
                 modifier = Modifier
-                    .padding(padding)
-                    .padding(16.dp)
                     .fillMaxSize()
+                    .padding(padding)
+                    .padding(horizontal = 24.dp)
                     .verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Foto Circular Clickeable
-                Box(contentAlignment = Alignment.BottomEnd) {
-                    // Nota: Si state.photo es una ruta local, File(path) funciona bien.
-                    val model = if (state.photo.isNotEmpty()) File(state.photo) else null
+                Spacer(Modifier.height(16.dp))
 
-                    AsyncImage(
-                        model = model,
-                        contentDescription = "Foto",
-                        contentScale = ContentScale.Crop,
+                // FOTO DE PERFIL CON BADGE DE EDICIÓN
+                Box(
+                    modifier = Modifier
+                        .size(140.dp)
+                        .padding(bottom = 24.dp),
+                    contentAlignment = Alignment.BottomEnd
+                ) {
+                    Box(
                         modifier = Modifier
-                            .size(120.dp)
+                            .fillMaxSize()
                             .clip(CircleShape)
-                            .clickable { launchGallery() }, // Abrir galería al tocar imagen
-                        // Usamos un vector painter para el placeholder (compatible common)
-                        placeholder = androidx.compose.ui.graphics.vector.rememberVectorPainter(Icons.Default.Person),
-                        error = androidx.compose.ui.graphics.vector.rememberVectorPainter(Icons.Default.Person)
-                    )
-
-                    // Botón pequeño flotante
-                    SmallFloatingActionButton(
-                        onClick = { launchGallery() }, // Abrir galería al tocar botón
-                        modifier = Modifier.offset(4.dp, 4.dp)
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
+                            .border(
+                                2.dp,
+                                MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                                CircleShape
+                            )
+                            .clickable { launchGallery() },
+                        contentAlignment = Alignment.Center
                     ) {
-                        Icon(Icons.Default.Edit, null)
+                        if (state.photo.isNotEmpty()) {
+                            AsyncImage(
+                                model = state.photo,
+                                contentDescription = null,
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
+                            )
+                        } else {
+                            Icon(
+                                Icons.Default.Person,
+                                null,
+                                modifier = Modifier.size(64.dp),
+                                tint = MaterialTheme.colorScheme.outline
+                            )
+                        }
+                    }
+
+                    Surface(
+                        shape = CircleShape,
+                        color = MaterialTheme.colorScheme.primary,
+                        contentColor = Color.White,
+                        modifier = Modifier.size(40.dp),
+                        shadowElevation = 4.dp
+                    ) {
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier.clickable { launchGallery() }) {
+                            Icon(Icons.Default.Edit, null, modifier = Modifier.size(20.dp))
+                        }
                     }
                 }
 
-                TextFieldApp(value = state.name, onValueChange = viewModel::onNameChange, label = "Nombre", imageVector = Icons.Default.Person)
-                TextFieldApp(value = state.nickname, onValueChange = viewModel::onNicknameChange, label = "Apodo", imageVector = Icons.Default.Face)
-                TextFieldApp(value = state.description, onValueChange = viewModel::onDescriptionChange, label = "Descripción", imageVector = Icons.Default.Description)
-                TextFieldApp(value = state.location, onValueChange = viewModel::onLocationChange, label = "Ubicación", imageVector = Icons.Default.LocationOn)
+                // FORMULARIO CON FORMFIELLD
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(20.dp)
+                ) {
+                    FormField(
+                        label = "Nombre Completo",
+                        value = state.name,
+                        onValueChange = viewModel::onNameChange,
+                        icon = Icons.Default.Badge
+                    )
+                    FormField(
+                        label = "Apodo",
+                        value = state.nickname,
+                        onValueChange = viewModel::onNicknameChange,
+                        icon = Icons.Default.AlternateEmail
+                    )
+                    FormField(
+                        label = "Ubicación / Dirección",
+                        value = state.location,
+                        onValueChange = viewModel::onLocationChange,
+                        icon = Icons.Default.LocationOn
+                    )
+                    FormField(
+                        label = "Descripción adicional",
+                        value = state.description,
+                        onValueChange = viewModel::onDescriptionChange,
+                        icon = Icons.Default.Notes,
+                        isLong = true
+                    )
+                }
 
-                Spacer(Modifier.height(16.dp))
+                Spacer(Modifier.height(32.dp))
 
                 if (state.isLoading) {
                     CircularProgressIndicator()
                 } else {
-                    PrimaryButton(text = "Guardar Cambios", onClick = viewModel::save)
+                    PrimaryButton(
+                        text = "Guardar Cambios",
+                        onClick = {
+                            viewModel.save() },
+                        modifier = Modifier.fillMaxWidth().height(56.dp)
+                    )
                 }
+                
+                Spacer(Modifier.height(24.dp))
             }
         }
     }
