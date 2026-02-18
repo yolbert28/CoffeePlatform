@@ -1,7 +1,5 @@
 package com.yolbertdev.coffeeplatform.util
 
-import org.jetbrains.skia.EncodedImageFormat
-import org.jetbrains.skia.Image
 import java.io.File
 import java.util.UUID
 
@@ -14,6 +12,15 @@ actual class ImageStorage {
         return try {
             file.writeBytes(bytes)
             file.absolutePath
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    actual fun readImage(path: String): ByteArray? {
+        return try {
+            File(path).readBytes()
         } catch (e: Exception) {
             e.printStackTrace()
             null

@@ -143,7 +143,15 @@ class RegisterScreen : Screen {
                     SecondaryTextFieldApp(
                         value = state.confirmPassword,
                         onValueChange = { viewModel.onConfirmChange(it) },
-                        placeholder = { Text("Confirmar Contraseña") }
+                        placeholder = { Text("Confirmar Contraseña") },
+                        visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        trailingIcon = {
+                            val image = if (confirmPasswordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
+                            IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
+                                Icon(imageVector = image, contentDescription = "Toggle password")
+                            }
+                        }
                     )
 
                     if (state.error != null) {
