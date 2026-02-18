@@ -21,6 +21,7 @@ import com.yolbertdev.coffeeplatform.ui.main.screens.loan.LoanTab
 import com.yolbertdev.coffeeplatform.ui.main.screens.home.HomeTab
 import com.yolbertdev.coffeeplatform.ui.main.screens.payment.PaymentTab
 import com.yolbertdev.coffeeplatform.ui.main.screens.ReportTab
+import com.yolbertdev.coffeeplatform.ui.main.screens.sync.SyncTab
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -47,5 +48,6 @@ fun CustomNavigationRail() {
         CustomNavigationRailItem(tabNavigator = tabNavigator, tabModel = PaymentTab)
         CustomNavigationRailItem(tabNavigator = tabNavigator, tabModel = LoanTab)
         CustomNavigationRailItem(tabNavigator = tabNavigator, tabModel = ReportTab)
+        CustomNavigationRailItem(tabNavigator = tabNavigator, tabModel = SyncTab)
     }
 }

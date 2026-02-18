@@ -22,6 +22,7 @@ import com.yolbertdev.coffeeplatform.ui.main.screens.customer.CustomerTab
 import com.yolbertdev.coffeeplatform.ui.main.screens.home.HomeTab
 import com.yolbertdev.coffeeplatform.ui.main.screens.loan.LoanTab
 import com.yolbertdev.coffeeplatform.ui.main.screens.payment.PaymentTab
+import com.yolbertdev.coffeeplatform.ui.main.screens.sync.SyncTab
 
 class MainScreen : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -36,7 +37,7 @@ class MainScreen : Screen {
             tabDisposable = {
                 TabDisposable(
                     it,
-                    listOf(HomeTab, CustomerTab, PaymentTab, LoanTab, ReportTab)
+                    listOf(HomeTab, CustomerTab, PaymentTab, LoanTab, ReportTab, SyncTab)
                 )
             }
         ) { tabNavigator ->
@@ -46,6 +47,7 @@ class MainScreen : Screen {
                 is PaymentTab -> "Gestión de Pagos"
                 is LoanTab -> "Gestión de Préstamos"
                 is ReportTab -> "Reportes"
+                is SyncTab -> "Sincronización"
                 else -> null
             }
 

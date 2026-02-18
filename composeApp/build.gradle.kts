@@ -8,6 +8,8 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
     alias(libs.plugins.sqldelight)
+    // En plugins (build.gradle.kts raíz o del módulo composeApp):
+    kotlin("plugin.serialization") version "2.0.21"
 }
 
 kotlin {
@@ -82,6 +84,7 @@ kotlin {
 
             // ViewModel
             implementation(libs.androidx.lifecycle.viewmodelCompose)
+            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

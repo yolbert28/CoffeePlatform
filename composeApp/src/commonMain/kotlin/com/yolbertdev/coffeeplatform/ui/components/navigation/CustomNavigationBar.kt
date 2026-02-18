@@ -8,6 +8,7 @@ import com.yolbertdev.coffeeplatform.ui.main.screens.loan.LoanTab
 import com.yolbertdev.coffeeplatform.ui.main.screens.home.HomeTab
 import com.yolbertdev.coffeeplatform.ui.main.screens.payment.PaymentTab
 import com.yolbertdev.coffeeplatform.ui.main.screens.ReportTab
+import com.yolbertdev.coffeeplatform.ui.main.screens.sync.SyncTab
 
 @Composable
 fun CustomNavigationBar() {
@@ -18,5 +19,6 @@ fun CustomNavigationBar() {
         CustomNavigationBarItem(tabNavigator = tabNavigator, tabModel = PaymentTab)
         CustomNavigationBarItem(tabNavigator = tabNavigator, tabModel = LoanTab)
         CustomNavigationBarItem(tabNavigator = tabNavigator, tabModel = ReportTab)
+        CustomNavigationBarItem(tabNavigator = tabNavigator, tabModel = SyncTab)
     }
 }

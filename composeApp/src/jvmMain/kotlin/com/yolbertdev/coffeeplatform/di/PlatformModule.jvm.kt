@@ -2,8 +2,10 @@ package com.yolbertdev.coffeeplatform.di
 
 import app.cash.sqldelight.db.SqlDriver
 import com.yolbertdev.coffeeplatform.data.local.DatabaseDriverFactory
+import com.yolbertdev.coffeeplatform.domain.ports.BackupFileManager
 import com.yolbertdev.coffeeplatform.domain.ports.PdfGenerator
 import com.yolbertdev.coffeeplatform.pdf.JvmPdfGenerator
+import com.yolbertdev.coffeeplatform.sync.JvmBackupFileManager
 import com.yolbertdev.coffeeplatform.util.ImageStorage
 import org.koin.dsl.module
 
@@ -12,4 +14,5 @@ actual val platformModule = module {
     single { ImageStorage() }
     // Definimos la implementación para Desktop
     single<PdfGenerator> { JvmPdfGenerator() }
+    single<BackupFileManager> { JvmBackupFileManager() }
 }

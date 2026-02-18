@@ -14,11 +14,14 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 import com.yolbertdev.coffeeplatform.data.database.dao.LoanDao
 import com.yolbertdev.coffeeplatform.data.database.dao.PaymentDao
+import com.yolbertdev.coffeeplatform.data.database.dao.SyncDao
 import com.yolbertdev.coffeeplatform.data.database.repository.LoanRepositoryImpl
 import com.yolbertdev.coffeeplatform.data.database.repository.PaymentRepositoryImpl
+import com.yolbertdev.coffeeplatform.data.database.repository.SyncRepositoryImpl
 import com.yolbertdev.coffeeplatform.data.database.repository.UserRepositoryImpl
 import com.yolbertdev.coffeeplatform.domain.repository.LoanRepository
 import com.yolbertdev.coffeeplatform.domain.repository.PaymentRepository
+import com.yolbertdev.coffeeplatform.domain.repository.SyncRepository
 import com.yolbertdev.coffeeplatform.domain.repository.UserRepository
 import com.yolbertdev.coffeeplatform.ui.login.LoginScreenModel
 import com.yolbertdev.coffeeplatform.ui.main.screens.customer.detail.CustomerDetailScreenModel
@@ -28,6 +31,7 @@ import com.yolbertdev.coffeeplatform.ui.main.screens.register.RegisterScreenMode
 import com.yolbertdev.coffeeplatform.ui.main.screens.customer.edit.EditCustomerScreenModel
 import com.yolbertdev.coffeeplatform.ui.main.screens.payment.PaymentScreenModel
 import com.yolbertdev.coffeeplatform.ui.main.screens.payment.add.AddPaymentScreenModel
+import com.yolbertdev.coffeeplatform.ui.main.screens.sync.SyncScreenModel
 
 val commonModule = module {
 
@@ -57,6 +61,11 @@ val commonModule = module {
     singleOf(::PaymentRepositoryImpl) bind PaymentRepository::class
 
     single { CustomerDetailScreenModel(get(), get(), get()) }
+    single { SyncDao(get()) }
+    single<SyncRepository> { SyncRepositoryImpl(get()) }
+    single { ExportBackupUseCase(get(), get()) }
+    single { ImportBackupUseCase(get(), get()) }
+    factory { SyncScreenModel(get(), get()) }
     factory<AddCustomerScreenModel>{ AddCustomerScreenModel(get(), get())}
     factory { AddLoanScreenModel(get(), get()) }
     factory { PaymentScreenModel(get()) }
