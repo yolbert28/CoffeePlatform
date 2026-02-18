@@ -1,12 +1,13 @@
 package com.yolbertdev.coffeeplatform.ui.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-
+import androidx.compose.ui.text.input.VisualTransformation
 @Composable
 fun TextFieldApp(
     value: String,
@@ -19,6 +20,8 @@ fun TextFieldApp(
     placeholder: @Composable (() -> Unit)? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
+    visualTransformation: VisualTransformation = VisualTransformation.None, // Nuevo
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default // Nuevo
 ) {
     TextField(
         value = value,
@@ -32,6 +35,8 @@ fun TextFieldApp(
         } else null,
         trailingIcon = trailingIcon,
         singleLine = true,
+        visualTransformation = visualTransformation,
+        keyboardOptions = keyboardOptions,
         modifier = modifier.fillMaxWidth(),
         colors = TextFieldDefaults.colors(
             focusedContainerColor = Color.Transparent,

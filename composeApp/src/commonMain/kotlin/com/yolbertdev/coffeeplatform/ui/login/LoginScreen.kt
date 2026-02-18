@@ -5,13 +5,20 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
@@ -36,7 +43,7 @@ class LoginScreen : Screen {
         val state by viewModel.state.collectAsState()
 
         var rememberMe by remember { mutableStateOf(false) }
-
+        var passwordVisible by remember { mutableStateOf(false) }
         // Efecto para navegar al Home si el login es exitoso
         LaunchedEffect(state.isLoggedIn) {
             if (state.isLoggedIn) {
@@ -121,7 +128,17 @@ class LoginScreen : Screen {
                     SecondaryTextFieldApp(
                         value = state.password,
                         onValueChange = { viewModel.onPasswordChange(it) },
-                        placeholder = { Text("Contraseña") }
+                        placeholder = { Text("Contraseña") },
+                        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        trailingIcon = {
+                            val image = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
+                            val description = if (passwordVisible) "Ocultar contraseña" else "Mostrar contraseña"
+
+                            IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                                Icon(imageVector = image, contentDescription = description)
+                            }
+                        }
                     )
 
                     Row(

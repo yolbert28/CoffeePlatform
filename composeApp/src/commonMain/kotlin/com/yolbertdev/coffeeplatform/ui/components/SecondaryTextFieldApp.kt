@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-
+import androidx.compose.ui.text.input.VisualTransformation
 @Composable
 fun SecondaryTextFieldApp(
     value: String,
@@ -26,6 +26,8 @@ fun SecondaryTextFieldApp(
     trailingIcon: @Composable (() -> Unit)? = null,
     singleLine: Boolean = true,
     minLines: Int = 1,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default
 ) {
     Surface(
         modifier = modifier
@@ -49,6 +51,7 @@ fun SecondaryTextFieldApp(
             trailingIcon = trailingIcon,
             singleLine = singleLine,
             minLines = minLines,
+            visualTransformation = visualTransformation,
             keyboardOptions = KeyboardOptions.Default.copy(
                 imeAction = if (singleLine) ImeAction.Next else ImeAction.Default,
                 keyboardType = KeyboardType.Text
