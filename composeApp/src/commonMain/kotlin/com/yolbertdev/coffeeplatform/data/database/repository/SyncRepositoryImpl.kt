@@ -77,7 +77,7 @@ class SyncRepositoryImpl(
                     description = customer.description,
                     creditLevel = customer.creditLevel,
                     location = customer.location,
-                    photo = customer.photo,
+                    photo = customer.photo?:"",
                     statusId = customer.statusId
                 )
             }

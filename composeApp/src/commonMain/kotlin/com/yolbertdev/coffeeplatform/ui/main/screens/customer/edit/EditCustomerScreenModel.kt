@@ -40,7 +40,7 @@ class EditCustomerScreenModel(
                 nickname = customer.nickname,
                 description = customer.description,
                 location = customer.location,
-                photo = customer.photo
+                photo = customer.photo?:""
             )
         }
     }

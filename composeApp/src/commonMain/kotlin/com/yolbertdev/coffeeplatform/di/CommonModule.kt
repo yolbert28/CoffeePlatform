@@ -63,8 +63,8 @@ val commonModule = module {
     single { CustomerDetailScreenModel(get(), get(), get()) }
     single { SyncDao(get()) }
     single<SyncRepository> { SyncRepositoryImpl(get()) }
-    single { ExportBackupUseCase(get(), get()) }
-    single { ImportBackupUseCase(get(), get()) }
+    single { ExportBackupUseCase(get(), get(), get()) }
+    single { ImportBackupUseCase(get(), get(), get()) }
     factory { SyncScreenModel(get(), get()) }
     factory<AddCustomerScreenModel>{ AddCustomerScreenModel(get(), get())}
     factory { AddLoanScreenModel(get(), get()) }

@@ -29,7 +29,7 @@ object CustomerMapper {
             description = customer.description,
             credit_level = customer.creditLevel,
             location = customer.location,
-            photo = customer.photo,
+            photo = customer.photo ?: "",
             creation_date = customer.creationDate,
             update_date = customer.updateDate,
             status_id = customer.statusId

@@ -8,7 +8,7 @@ data class Customer(
     val description: String,
     val creditLevel: Long,
     val location: String,
-    val photo: String,
+    val photo: String?,
     val creationDate: Long,
     val updateDate: Long,
     val statusId: Long

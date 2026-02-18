@@ -169,7 +169,7 @@ data class LoanDetailScreen(val loan: Loan, val customer: Customer) : Screen {
                         modifier = Modifier.padding(16.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        val model = if (customer.photo.isNotEmpty()) File(customer.photo) else null
+                        val model = if (!customer.photo.isNullOrEmpty()) File(customer.photo!!) else null
 
                         AsyncImage(
                             model = model,

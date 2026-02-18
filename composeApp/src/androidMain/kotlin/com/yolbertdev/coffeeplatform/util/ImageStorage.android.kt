@@ -24,4 +24,13 @@ actual class ImageStorage(private val context: Context) {
             null
         }
     }
+    actual fun readImage(path: String): ByteArray? {
+        return try {
+            val file = File(path)
+            if (file.exists()) file.readBytes() else null
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
 }

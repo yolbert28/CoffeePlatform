@@ -9,7 +9,8 @@ data class BackupData(
     val appName: String = "CoffeePlatform",
     val customers: List<CustomerBackup>,
     val loans: List<LoanBackup>,
-    val payments: List<PaymentBackup>
+    val payments: List<PaymentBackup>,
+    val images: Map<String, String> = emptyMap() // Clave: NombreArchivo, Valor: Base64
 )
 
 @Serializable
@@ -21,7 +22,7 @@ data class CustomerBackup(
     val description: String,
     val creditLevel: Long,
     val location: String,
-    val photo: String,
+    val photo: String?,
     val creationDate: Long,
     val updateDate: Long,
     val statusId: Long
