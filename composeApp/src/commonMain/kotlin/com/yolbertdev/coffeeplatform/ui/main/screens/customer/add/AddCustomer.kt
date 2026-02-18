@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddAPhoto
@@ -50,7 +51,7 @@ class AddCustomerScreen() : Screen {
         }
 
         val uiState by screenModel.uiState.collectAsState()
-
+        val scrollState = rememberScrollState()
         Scaffold(
             topBar = {
                 TopAppBar(
@@ -70,6 +71,7 @@ class AddCustomerScreen() : Screen {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(innerPadding)
+                    .imePadding()
                     .padding(horizontal = 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {

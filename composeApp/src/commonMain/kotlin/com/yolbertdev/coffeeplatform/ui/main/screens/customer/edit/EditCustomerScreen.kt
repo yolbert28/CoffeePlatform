@@ -35,7 +35,7 @@ data class EditCustomerScreen(val customer: Customer) : Screen {
         val navigator = LocalNavigator.currentOrThrow
         val viewModel = koinScreenModel<EditCustomerScreenModel>()
         val state by viewModel.state.collectAsState()
-
+        val scrollState = rememberScrollState()
         LaunchedEffect(Unit) {
             viewModel.init(customer)
         }
@@ -72,6 +72,7 @@ data class EditCustomerScreen(val customer: Customer) : Screen {
                     .fillMaxSize()
                     .padding(padding)
                     .padding(horizontal = 24.dp)
+                    .imePadding()
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {

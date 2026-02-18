@@ -42,6 +42,7 @@ class RegisterScreen : Screen {
         val state by viewModel.state.collectAsState()
         var passwordVisible by remember { mutableStateOf(false) }
         var confirmPasswordVisible by remember { mutableStateOf(false) }
+        val scrollState = rememberScrollState()
         LaunchedEffect(state.isSuccess) {
             if (state.isSuccess) {
                 navigator.pop() // Volver al login tras registro exitoso
@@ -70,6 +71,7 @@ class RegisterScreen : Screen {
             Column(
                 modifier = Modifier
                     .padding(horizontal = 24.dp)
+                    .imePadding()
                     .widthIn(max = 400.dp)
                     .fillMaxWidth()
                     .align(Alignment.Center)

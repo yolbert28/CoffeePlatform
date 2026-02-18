@@ -37,7 +37,7 @@ class AddPaymentScreen : Screen {
         val snackbarHostState = remember { SnackbarHostState() }
         var showDatePicker by remember { mutableStateOf(false) }
         val datePickerState = rememberDatePickerState(initialSelectedDateMillis = state.paymentDate)
-
+        val scrollState = rememberScrollState()
         LaunchedEffect(state.success) {
             if (state.success) {
                 snackbarHostState.showSnackbar("Pago registrado exitosamente")
@@ -76,6 +76,7 @@ class AddPaymentScreen : Screen {
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(padding)
+                    .imePadding()
                     .padding(horizontal = 24.dp)
                     .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(16.dp)

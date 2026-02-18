@@ -40,7 +40,7 @@ class AddLoanScreen : Screen {
 
         val paymentDatePickerState = rememberDatePickerState(initialSelectedDateMillis = state.paymentDate)
         val creationDatePickerState = rememberDatePickerState(initialSelectedDateMillis = state.creationDate)
-
+        val scrollState = rememberScrollState()
         LaunchedEffect(state.showSuccessMessage) {
             if (state.showSuccessMessage) {
                 snackbarHostState.showSnackbar("¡Préstamo creado correctamente!")
@@ -93,6 +93,7 @@ class AddLoanScreen : Screen {
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
+                    .imePadding()
                     .padding(horizontal = 24.dp)
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
