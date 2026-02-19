@@ -145,8 +145,16 @@ compose.desktop {
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "com.yolbertdev.coffeeplatform"
+            includeAllModules = true
+            packageName = "Coffee Platform"
             packageVersion = "1.0.0"
+            windows {
+                shortcut = true
+                menu = true
+                menuGroup = "Coffee Platform"
+                // Si tienes un icono .ico, puedes ponerlo aquí:
+                // iconFile.set(project.file("icon.ico"))
+            }
         }
     }
 }
