@@ -97,6 +97,14 @@ class AddPaymentScreenModel(
             return
         }
 
+        // NUEVA VALIDACIÓN: La fecha del pago no puede ser anterior a la del préstamo
+        // Restamos 24h (86_400_000 ms) para asegurar que permita registrar el pago el mismo día del préstamo.
+        val loanCreationDate = s.selectedLoanWrapper.loan.creationDate
+        if (s.paymentDate < (loanCreationDate - 86_400_000L)) {
+            _state.update { it.copy(error = "La fecha del pago no puede ser anterior al préstamo") }
+            return
+        }
+
         screenModelScope.launch {
             _state.update { it.copy(isLoading = true) }
             try {

@@ -36,7 +36,20 @@ class AddPaymentScreen : Screen {
 
         val snackbarHostState = remember { SnackbarHostState() }
         var showDatePicker by remember { mutableStateOf(false) }
-        val datePickerState = rememberDatePickerState(initialSelectedDateMillis = state.paymentDate)
+        val datePickerState = rememberDatePickerState(
+            initialSelectedDateMillis = state.paymentDate,
+            selectableDates = object : SelectableDates {
+                override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+                    // Si hay un préstamo seleccionado, bloqueamos los días anteriores a su creación
+                    val loanDate = state.selectedLoanWrapper?.loan?.creationDate
+                    return if (loanDate != null) {
+                        utcTimeMillis >= (loanDate - 86_400_000L)
+                    } else {
+                        true // Si no ha seleccionado préstamo, dejamos el calendario libre
+                    }
+                }
+            }
+        )
         val scrollState = rememberScrollState()
         LaunchedEffect(state.success) {
             if (state.success) {
