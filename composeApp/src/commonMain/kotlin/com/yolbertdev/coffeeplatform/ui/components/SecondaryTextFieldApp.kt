@@ -52,9 +52,10 @@ fun SecondaryTextFieldApp(
             singleLine = singleLine,
             minLines = minLines,
             visualTransformation = visualTransformation,
-            keyboardOptions = KeyboardOptions.Default.copy(
-                imeAction = if (singleLine) ImeAction.Next else ImeAction.Default,
-                keyboardType = KeyboardType.Text
+            keyboardOptions = keyboardOptions.copy(
+                imeAction = if (keyboardOptions.imeAction == ImeAction.Default) {
+                    if (singleLine) ImeAction.Next else ImeAction.Default
+                } else keyboardOptions.imeAction
             ),
             modifier = Modifier.fillMaxWidth(),
             colors = TextFieldDefaults.colors(

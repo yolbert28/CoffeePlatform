@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 
 data class EditCustomerState(
     val id: Long = 0,
+    val idCard: String = "",
     val name: String = "",
     val nickname: String = "",
     val description: String = "",
@@ -36,6 +37,7 @@ class EditCustomerScreenModel(
         _state.update {
             it.copy(
                 id = customer.id,
+                idCard = customer.idCard ?: "",
                 name = customer.name,
                 nickname = customer.nickname,
                 description = customer.description,
@@ -45,6 +47,7 @@ class EditCustomerScreenModel(
         }
     }
 
+    fun onIdCardChange(v: String) = _state.update { it.copy(idCard = v) }
     fun onNameChange(v: String) = _state.update { it.copy(name = v) }
     fun onNicknameChange(v: String) = _state.update { it.copy(nickname = v) }
     fun onDescriptionChange(v: String) = _state.update { it.copy(description = v) }
@@ -67,6 +70,7 @@ class EditCustomerScreenModel(
             _state.update { it.copy(isLoading = true) }
             try {
                 val updated = original.copy(
+                    idCard = current.idCard,
                     name = current.name,
                     nickname = current.nickname,
                     description = current.description,

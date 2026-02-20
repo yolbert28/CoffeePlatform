@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddAPhoto
 import androidx.compose.material.icons.rounded.*
@@ -21,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
@@ -151,8 +153,12 @@ class AddCustomerScreen() : Screen {
                         FormField(
                             label = "Número de Cédula",
                             value = uiState.idCard,
-                            onValueChange = { screenModel.onChangeIdCard(it) },
-                            icon = Icons.Rounded.Fingerprint
+                            onValueChange = {
+                                val newText = it.filter { char -> char.isDigit() }
+                                screenModel.onChangeIdCard(newText)
+                            },
+                            icon = Icons.Rounded.Fingerprint,
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                         )
                         FormField(
                             label = "Ubicación / Dirección",
@@ -196,7 +202,8 @@ private fun FormField(
     isLong: Boolean = false,
     maxLines: Int = 3,
     value: String,
-    onValueChange: (String) -> Unit
+    onValueChange: (String) -> Unit,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
@@ -214,7 +221,8 @@ private fun FormField(
                 Icon(icon, null)
             },
             singleLine = !isLong,
-            minLines = if (isLong) maxLines else 1
+            minLines = if (isLong) maxLines else 1,
+            keyboardOptions = keyboardOptions
         )
     }
 }
