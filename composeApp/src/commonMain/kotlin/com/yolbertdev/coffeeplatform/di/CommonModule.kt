@@ -39,8 +39,7 @@ val commonModule = module {
     single<CustomerDao> { CustomerDao(get()) }
     single<LoanDao> { LoanDao(get()) }
     single<PaymentDao> { PaymentDao(get()) }
-    
-    single<HomeScreenModel> { HomeScreenModel(get()) }
+
     single<CustomerScreenModel>{CustomerScreenModel(get(), get())}
     
     single { InsertLoanUseCase(get()) }
